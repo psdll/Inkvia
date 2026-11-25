@@ -1,0 +1,127 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+otelcol.receiver.otlp "inkvia" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+
+  output {
+    traces = [otelcol.processor.batch.inkvia.input]
+    logs   = [otelcol.processor.attributes.loki_labels.input]
+  }
+}
+
+otelcol.processor.batch "inkvia" {
+  timeout         = "5s"
+  send_batch_size = 1024
+
+  output {
+    traces = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "tempo:4317"
+
+    tls {
+      insecure = true
+    }
+  }
+}
+
+otelcol.processor.attributes "loki_labels" {
+  action {
+    key    = "loki.resource.labels"
+    action = "insert"
+    value  = "service.name,service.namespace,deployment.environment"
+  }
+
+  output {
+    logs = [otelcol.exporter.loki.otlp.input]
+  }
+}
+
+otelcol.exporter.loki "otlp" {
+  forward_to = [loki.write.local.receiver]
+}
+
+local.file_match "normal_logs" {
+  path_targets = [
+    { "__path__" = "/var/log/inkvia/web.log", "project" = "inkvia", "service" = "web", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/canvas-generation.log", "project" = "inkvia", "service" = "generation-worker", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/canvas-media.log", "project" = "inkvia", "service" = "media-worker", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/live-video-prompt-worker.log", "project" = "inkvia", "service" = "live-video-prompt-worker", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/live-video-video-worker.log", "project" = "inkvia", "service" = "live-video-video-worker", "log_class" = "normal" },
+    { "__path__" = "/var/log/nginx/access.log", "project" = "inkvia", "service" = "nginx", "log_class" = "normal" },
+    { "__path__" = "/var/log/postgresql/*.log", "project" = "inkvia", "service" = "postgresql", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/prometheus.log", "project" = "inkvia", "service" = "prometheus", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/loki.log", "project" = "inkvia", "service" = "loki", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/tempo.log", "project" = "inkvia", "service" = "tempo", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/grafana.log", "project" = "inkvia", "service" = "grafana", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/alloy.log", "project" = "inkvia", "service" = "alloy", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/alertmanager.log", "project" = "inkvia", "service" = "alertmanager", "log_class" = "normal" },
+    { "__path__" = "/var/log/inkvia/postgres-exporter.log", "project" = "inkvia", "service" = "postgres-exporter", "log_class" = "normal" },
+  ]
+  sync_period = "10s"
+}
+
+local.file_match "error_logs" {
+  path_targets = [
+    { "__path__" = "/var/log/inkvia/web-error.log", "project" = "inkvia", "service" = "web", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/canvas-generation-error.log", "project" = "inkvia", "service" = "generation-worker", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/canvas-media-error.log", "project" = "inkvia", "service" = "media-worker", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/live-video-prompt-worker-error.log", "project" = "inkvia", "service" = "live-video-prompt-worker", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/live-video-video-worker-error.log", "project" = "inkvia", "service" = "live-video-video-worker", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/nginx/error.log", "project" = "inkvia", "service" = "nginx", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/prometheus-error.log", "project" = "inkvia", "service" = "prometheus", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/loki-error.log", "project" = "inkvia", "service" = "loki", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/tempo-error.log", "project" = "inkvia", "service" = "tempo", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/grafana-error.log", "project" = "inkvia", "service" = "grafana", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/alloy-error.log", "project" = "inkvia", "service" = "alloy", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/alertmanager-error.log", "project" = "inkvia", "service" = "alertmanager", "level" = "error", "log_class" = "error" },
+    { "__path__" = "/var/log/inkvia/postgres-exporter-error.log", "project" = "inkvia", "service" = "postgres-exporter", "level" = "error", "log_class" = "error" },
+  ]
+  sync_period = "10s"
+}
+
+local.file_match "audit_logs" {
+  path_targets = [{
+    "__path__" = "/var/log/inkvia/*audit*.log",
+    "project"  = "inkvia",
+    "service"  = "ops",
+    "log_class" = "audit",
+  }]
+  sync_period = "10s"
+}
+
+loki.source.file "normal_logs" {
+  targets       = local.file_match.normal_logs.targets
+  forward_to    = [loki.write.local.receiver]
+  tail_from_end = true
+}
+
+loki.source.file "error_logs" {
+  targets       = local.file_match.error_logs.targets
+  forward_to    = [loki.write.local.receiver]
+  tail_from_end = true
+}
+
+loki.source.file "audit_logs" {
+  targets       = local.file_match.audit_logs.targets
+  forward_to    = [loki.write.local.receiver]
+  tail_from_end = true
+}
+
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

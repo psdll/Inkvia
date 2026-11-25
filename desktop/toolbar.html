@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'">
+<title>Inkvia</title>
+<style>
+:root { color-scheme: dark; --bg:#202020; --muted:rgba(255,255,255,.68); --hover:#282828; --line:rgba(255,255,255,.12) }
+:root[data-theme="light"] { color-scheme: light; --bg:#e9ecef; --muted:#626c7a; --hover:#e1e5ea; --line:#cdd3db }
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--muted); font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; user-select:none }
+header { height:40px; display:flex; align-items:center; padding:0 8px; border-bottom:1px solid var(--line); -webkit-app-region:drag }
+[data-platform="win32"] header { width:env(titlebar-area-width, calc(100% - 144px)) }
+strong { margin-left:12px; font-weight:500 }
+[data-platform="darwin"] header { padding-left:82px }
+[data-platform="darwin"] strong { position:absolute; left:50%; transform:translateX(-50%); margin:0 }
+</style>
+<script src="toolbar.js" defer></script>
+</head>
+<body><header>
+<strong>Inkvia</strong>
+</header></body></html>

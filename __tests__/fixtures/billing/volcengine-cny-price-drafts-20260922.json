@@ -1,0 +1,303 @@
+{
+  "format": "inkvia-price-drafts-v1",
+  "drafts": [
+    {
+      "id": "3eea25b0c6282a293723f0310f365c178297bef7e107d22f9a7f603cb4a61f9c",
+      "provider": "volcengine",
+      "model": "doubao-seedream-5.0-pro",
+      "module": "image",
+      "label": "Doubao-Seedream-5.0-Pro",
+      "currency": "CNY",
+      "notes": "来源 https://docs.volcengine.com/docs/ark/model-pricing?lang=zh；2026-09-22 核对；人民币充值、人民币结算，CNY 单价无兑换。仅录在线推理标准价，不含离线、资源包或企业限时优惠；未设置生效日。单图生成：261 万像素以内 0.30 元/张，以上 0.60 元/张；项目固定尺寸映射 1K 全部在低档、2K 全部在高档。参考图首张免费，第 2 张起 0.02 元/张。当前没有接入图层拆分，不套用其单价。",
+      "rows": [
+        {
+          "conditions": {},
+          "unitType": "additional_input_image",
+          "price": "0.02"
+        },
+        {
+          "conditions": {
+            "resolution": "1K"
+          },
+          "unitType": "image",
+          "price": "0.3"
+        },
+        {
+          "conditions": {
+            "resolution": "2K"
+          },
+          "unitType": "image",
+          "price": "0.6"
+        }
+      ]
+    },
+    {
+      "id": "251f693840d33cba33f2c50fa5280b70a5e64c1afd164694d6930fcdd6117685",
+      "provider": "volcengine",
+      "model": "doubao-seedream-5.0-lite",
+      "module": "image",
+      "label": "Doubao-Seedream-5.0-lite",
+      "currency": "CNY",
+      "notes": "来源 https://docs.volcengine.com/docs/ark/model-pricing?lang=zh；2026-09-22 核对；人民币充值、人民币结算，CNY 单价无兑换。仅录在线推理标准价，不含离线、资源包或企业限时优惠；未设置生效日。视频以接口返回 usage.completion_tokens 为实际用量；图片按成功输出张数计费。",
+      "rows": [
+        {
+          "conditions": {},
+          "unitType": "image",
+          "price": "0.22"
+        }
+      ]
+    },
+    {
+      "id": "e2a55d5bd8bad05a1a948e2471a068ca232989df2b42f9d2e8d55862cfd36415",
+      "provider": "volcengine",
+      "model": "doubao-seedream-4.5",
+      "module": "image",
+      "label": "Doubao-Seedream-4.5",
+      "currency": "CNY",
+      "notes": "来源 https://docs.volcengine.com/docs/ark/model-pricing?lang=zh；2026-09-22 核对；人民币充值、人民币结算，CNY 单价无兑换。仅录在线推理标准价，不含离线、资源包或企业限时优惠；未设置生效日。视频以接口返回 usage.completion_tokens 为实际用量；图片按成功输出张数计费。",
+      "rows": [
+        {
+          "conditions": {},
+          "unitType": "image",
+          "price": "0.25"
+        }
+      ]
+    },
+    {
+      "id": "91cde23cd9a98cf5808fa0a25f98c8a97149dd95f9ebdd6ff62026afcf30ce6c",
+      "provider": "volcengine",
+      "model": "doubao-seedream-4.0",
+      "module": "image",
+      "label": "Doubao-Seedream-4.0",
+      "currency": "CNY",
+      "notes": "来源 https://docs.volcengine.com/docs/ark/model-pricing?lang=zh；2026-09-22 核对；人民币充值、人民币结算，CNY 单价无兑换。仅录在线推理标准价，不含离线、资源包或企业限时优惠；未设置生效日。视频以接口返回 usage.completion_tokens 为实际用量；图片按成功输出张数计费。",
+      "rows": [
+        {
+          "conditions": {},
+          "unitType": "image",
+          "price": "0.2"
+        }
+      ]
+    },
+    {
+      "id": "db3355248fe40e75734f39fc0035b12305539a588019137488df65b06755bdfc",
+      "provider": "volcengine",
+      "model": "doubao-seedance-2-0-260128",
+      "module": "video",
+      "label": "Seedance 2.0",
+      "currency": "CNY",
+      "notes": "来源 https://docs.volcengine.com/docs/ark/model-pricing?lang=zh；2026-09-22 核对；人民币充值、人民币结算，CNY 单价无兑换。仅录在线推理标准价，不含离线、资源包或企业限时优惠；未设置生效日。视频以接口返回 usage.completion_tokens 为实际用量；图片按成功输出张数计费。",
+      "rows": [
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "1080p"
+          },
+          "unitType": "million_token",
+          "price": "51"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "480p"
+          },
+          "unitType": "million_token",
+          "price": "46"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "4k"
+          },
+          "unitType": "million_token",
+          "price": "26"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "720p"
+          },
+          "unitType": "million_token",
+          "price": "46"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "1080p"
+          },
+          "unitType": "million_token",
+          "price": "31"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "480p"
+          },
+          "unitType": "million_token",
+          "price": "28"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "4k"
+          },
+          "unitType": "million_token",
+          "price": "16"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "720p"
+          },
+          "unitType": "million_token",
+          "price": "28"
+        }
+      ]
+    },
+    {
+      "id": "8bc84a9afcfc01b0791d4872c88b5c2f45cf66eb09cfbe458a48d7196c6d4831",
+      "provider": "volcengine",
+      "model": "doubao-seedance-2-5-260628",
+      "module": "video",
+      "label": "Seedance 2.5",
+      "currency": "CNY",
+      "notes": "来源 https://docs.volcengine.com/docs/ark/model-pricing?lang=zh；2026-09-22 核对；人民币充值、人民币结算，CNY 单价无兑换。仅录在线推理标准价，不含离线、资源包或企业限时优惠；未设置生效日。按输入是否包含视频区分，只有参考图片仍使用不含视频档；1080p 单独为 77/46 元每百万 Token。",
+      "rows": [
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "1080p"
+          },
+          "unitType": "million_token",
+          "price": "77"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "480p"
+          },
+          "unitType": "million_token",
+          "price": "70"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "720p"
+          },
+          "unitType": "million_token",
+          "price": "70"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "1080p"
+          },
+          "unitType": "million_token",
+          "price": "46"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "480p"
+          },
+          "unitType": "million_token",
+          "price": "42"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "720p"
+          },
+          "unitType": "million_token",
+          "price": "42"
+        }
+      ]
+    },
+    {
+      "id": "5a4bb4e6ba96c10ef1f3eb7d1e7f30e718a428188515d4608ab1c308264cfd38",
+      "provider": "volcengine",
+      "model": "doubao-seedance-2-0-fast-260128",
+      "module": "video",
+      "label": "Seedance 2.0 Fast",
+      "currency": "CNY",
+      "notes": "来源 https://docs.volcengine.com/docs/ark/model-pricing?lang=zh；2026-09-22 核对；人民币充值、人民币结算，CNY 单价无兑换。仅录在线推理标准价，不含离线、资源包或企业限时优惠；未设置生效日。用户确认先按标准价。企业优惠仅限 2026-08-07 14:00 至 2026-10-07 14:00，且有额度上限，本草稿不采用限时 75 折。",
+      "rows": [
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "480p"
+          },
+          "unitType": "million_token",
+          "price": "37"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "720p"
+          },
+          "unitType": "million_token",
+          "price": "37"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "480p"
+          },
+          "unitType": "million_token",
+          "price": "22"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "720p"
+          },
+          "unitType": "million_token",
+          "price": "22"
+        }
+      ]
+    },
+    {
+      "id": "6a8e0f2deee05e7ae386996c5bbd7ebb77b28b253ec75e1a85bb847c5db49399",
+      "provider": "volcengine",
+      "model": "doubao-seedance-2-0-mini-260615",
+      "module": "video",
+      "label": "Seedance 2.0 Mini",
+      "currency": "CNY",
+      "notes": "来源 https://docs.volcengine.com/docs/ark/model-pricing?lang=zh；2026-09-22 核对；人民币充值、人民币结算，CNY 单价无兑换。仅录在线推理标准价，不含离线、资源包或企业限时优惠；未设置生效日。用户确认先按标准价。企业优惠仅限 2026-08-07 14:00 至 2026-10-07 14:00，且有额度上限，本草稿不采用限时 4 折。",
+      "rows": [
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "480p"
+          },
+          "unitType": "million_token",
+          "price": "23"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "false",
+            "resolution": "720p"
+          },
+          "unitType": "million_token",
+          "price": "23"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "480p"
+          },
+          "unitType": "million_token",
+          "price": "14"
+        },
+        {
+          "conditions": {
+            "inputContainsVideo": "true",
+            "resolution": "720p"
+          },
+          "unitType": "million_token",
+          "price": "14"
+        }
+      ]
+    }
+  ]
+}

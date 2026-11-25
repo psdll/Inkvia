@@ -1,0 +1,1975 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Canvas Creative Agent owns its state; existing AgentRun planner data is not reused.
+model CreativeAgentSession {
+  id          String   @id
+  actorUserId Int      @map("actor_user_id")
+  canvasId    Int      @map("canvas_id")
+  transcript  Json     @default("[]")
+  creationContext Json? @map("creation_context")
+  title       String   @default("新对话")
+  titleSource String   @default("auto") @map("title_source")
+  titleMessageId String? @map("title_message_id")
+  titleAttemptMessageId String? @map("title_attempt_message_id")
+  titleClaimId String? @map("title_claim_id")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz(3)
+  runs        CreativeAgentRun[]
+  messages    CreativeAgentMessage[]
+  actor       User     @relation(fields: [actorUserId], references: [id], onDelete: Cascade)
+  canvas      Canvas   @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+
+  @@index([actorUserId, canvasId, updatedAt])
+}
+
+model CreativeAgentRun {
+  id             String   @id
+  sessionId      String   @map("session_id")
+  actorUserId    Int      @map("actor_user_id")
+  canvasId       Int      @map("canvas_id")
+  status         String
+  epoch          Int      @default(0)
+  workerId       String?  @map("worker_id")
+  leaseExpiresAt DateTime? @map("lease_expires_at") @db.Timestamptz(3)
+  input          Json
+  error          String?
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @default(now()) @map("updated_at") @db.Timestamptz(3)
+  session        CreativeAgentSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  messages       CreativeAgentMessage[]
+  events         CreativeAgentEvent[]
+  traceEvents    CreativeAgentTraceEvent[]
+  actions        CreativeAgentAction[]
+  decisions      CreativeAgentDecision[]
+  requests       CreativeAgentRequest[]
+
+  @@index([status, createdAt])
+  @@index([sessionId, createdAt])
+  @@index([canvasId, status])
+}
+
+model CreativeAgentMessage {
+  id            String   @id
+  sessionId     String   @map("session_id")
+  runId         String   @map("run_id")
+  role          String
+  text          String   @db.Text
+  referenceData Json?    @map("reference_data")
+  inputHash     String?  @map("input_hash")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  session       CreativeAgentSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  run           CreativeAgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
+
+model CreativeAgentEvent {
+  sequence  BigInt   @id @default(autoincrement())
+  runId     String   @map("run_id")
+  type      String
+  payload   Json
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  run       CreativeAgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([runId, sequence])
+}
+
+model CreativeAgentTraceEvent {
+  id           String @id
+  sequence     BigInt @unique @default(autoincrement())
+  runId        String @map("run_id")
+  spanId       String @map("span_id")
+  parentSpanId String? @map("parent_span_id")
+  category     String
+  type         String
+  title        String
+  status       String
+  summary      Json @default("{}")
+  detail       Json?
+  eventKey     String? @map("event_key")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  run          CreativeAgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@unique([runId, eventKey])
+  @@index([runId, sequence])
+  @@index([runId, spanId, sequence])
+  @@index([createdAt])
+}
+
+model CreativeAgentAction {
+  id          String   @id
+  runId       String   @map("run_id")
+  actorUserId Int      @map("actor_user_id")
+  canvasId    Int      @map("canvas_id")
+  epoch       Int
+  kind        String
+  inputHash   String   @map("input_hash")
+  state       String
+  result      Json?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz(3)
+  run         CreativeAgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([runId])
+}
+
+model CreativeAgentDecision {
+  id           String   @id
+  runId        String   @map("run_id")
+  actionId     String   @unique @map("action_id")
+  proposalHash String   @map("proposal_hash")
+  title        String
+  question     String
+  options      Json
+  fields       Json     @default("[]")
+  binding      Json?
+  state        String
+  answer       Json?
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  answeredAt   DateTime? @map("answered_at") @db.Timestamptz(3)
+  run          CreativeAgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+}
+
+model CreativeAgentRequest {
+  id          String   @id
+  actorUserId Int      @map("actor_user_id")
+  inputHash   String   @map("input_hash")
+  result      Json
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  runId       String?  @map("run_id")
+  actor       User     @relation(fields: [actorUserId], references: [id], onDelete: Cascade)
+  run         CreativeAgentRun? @relation(fields: [runId], references: [id], onDelete: Cascade)
+}
+
+model WhitelistName {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id                 Int                 @id @default(autoincrement())
+  username           String              @unique
+  password           String
+  passwordCipher     Json?
+  credentialVersion  Int                 @default(0)
+  passwordResetGrants PasswordResetGrant[]
+  token              String?             @unique
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  generations        Generation[]
+  mediaLibraryItems  MediaLibraryItem[]  @relation("MediaLibraryOwner")
+  createdMaterialAssets MaterialAsset[]  @relation("MaterialAssetCreatedBy")
+  selectedMaterialAssets MaterialAsset[] @relation("MaterialAssetSelectedBy")
+  materialAssetDownloads MaterialAssetDownload[]
+  materialAssetSelectionEvents MaterialAssetSelectionEvent[]
+  agentConversations AgentConversation[]
+  creativeAgentSessions CreativeAgentSession[]
+  creativeAgentRequests CreativeAgentRequest[]
+  userMemories       UserMemory[]
+  agentMemoryProfile AgentMemoryProfile?
+  canvases           Canvas[]
+  canvasVoiceFavorites CanvasVoiceFavorite[]
+  canvasMemberships  CanvasMember[]
+  canvasMutations    CanvasMutation[]
+  canvasProjects     CanvasProject[]
+  canvasRuns         CanvasRun[]
+  canvasRunSteps     CanvasRunStep[]
+  mediaAssets        MediaAsset[]
+  imageBatches       ImageBatch[]
+  imageBatchGroups   ImageBatchGroup[]
+  liveVideoBatches   LiveVideoBatch[]
+  toolWorkspaceDrafts ToolWorkspaceDraft[]
+  promptPresets               PromptPreset[]
+  builtinPromptDeletions      UserBuiltinPromptDeletion[]
+  promptPresetMigrationStates PromptPresetMigrationState[]
+  virtualAvatars     VirtualAvatar[]
+  promptReverseTasks PromptReverseTask[]
+  rolePositioningDrafts RolePositioningDraft[]
+  roleSkills          UserRoleSkill[]
+}
+
+model PasswordResetGrant {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            Int
+  tokenDigest       String    @unique @db.Char(64)
+  credentialVersion Int
+  expiresAt         DateTime
+  consumedAt        DateTime?
+  revokedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  createdBy         String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model CanvasVoiceFavorite {
+  userId        Int
+  providerScope String   @db.VarChar(128)
+  voiceId       String   @db.VarChar(256)
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, providerScope, voiceId])
+  @@index([userId, createdAt])
+}
+
+model SystemRoleSkill {
+  id            BigInt    @id @default(autoincrement())
+  name          String    @db.VarChar(64)
+  summary       String    @db.VarChar(200)
+  category      String    @db.VarChar(64)
+  coverUrl      String?   @db.Text
+  content       String    @db.Text
+  usageScenario String    @db.Text
+  usageGuide    String    @db.Text
+  mediaType     String?   @db.VarChar(16)
+  status        String    @default("hidden") @db.VarChar(16)
+  revision      Int       @default(1)
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([status, deletedAt, updatedAt])
+  @@index([category, status, deletedAt])
+}
+
+model UserRoleSkill {
+  id            BigInt    @id @default(autoincrement())
+  authUserId    Int
+  authUser      User      @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  name          String    @db.VarChar(64)
+  summary       String    @db.VarChar(200)
+  category      String    @db.VarChar(64)
+  coverUrl      String?   @db.Text
+  content       String    @db.Text
+  usageScenario String    @db.Text
+  usageGuide    String    @db.Text
+  mediaType     String?   @db.VarChar(16)
+  revision      Int       @default(1)
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([authUserId, deletedAt, updatedAt])
+  @@index([authUserId, category, deletedAt])
+}
+
+model PromptPreset {
+  id         BigInt   @id @default(autoincrement())
+  authUserId Int
+  authUser   User     @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  name       String   @db.VarChar(128)
+  category   String   @db.VarChar(64)
+  content    String   @db.Text
+  revision   Int      @default(1)
+  legacyKey  String?  @db.VarChar(256)
+  deletedAt  DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([authUserId, legacyKey])
+  @@index([authUserId, deletedAt, updatedAt])
+}
+
+model BuiltinPromptPreset {
+  id         BigInt   @id @default(autoincrement())
+  key        String   @unique @db.VarChar(256)
+  name       String   @db.VarChar(128)
+  category   String   @db.VarChar(64)
+  content    String   @db.Text
+  revision   Int      @default(1)
+  deletedAt  DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletions  UserBuiltinPromptDeletion[]
+
+  @@index([deletedAt, updatedAt])
+}
+
+model UserBuiltinPromptDeletion {
+  authUserId           Int
+  builtinPromptPresetId BigInt
+  authUser             User                @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  builtinPromptPreset  BuiltinPromptPreset @relation(fields: [builtinPromptPresetId], references: [id], onDelete: Cascade)
+  createdAt            DateTime            @default(now())
+
+  @@id([authUserId, builtinPromptPresetId])
+  @@index([builtinPromptPresetId])
+}
+
+model PromptPresetMigrationState {
+  id          BigInt   @id @default(autoincrement())
+  subjectKey  String   @unique @db.VarChar(128)
+  authUserId  Int?
+  authUser    User?    @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  source      String   @db.VarChar(64)
+  version     Int
+  digest      String   @db.VarChar(64)
+  rowCount    Int
+  completedAt DateTime @default(now())
+
+  @@index([authUserId, source])
+}
+
+// 无限画布：每个用户的节点画布文档（React Flow 的 nodes+edges 存成 JSON）。
+// 按 authUserId 隔离 —— 比原版单用户更强。软删除进回收站(deletedAt)。
+model Canvas {
+  creativeAgentSessions CreativeAgentSession[]
+  id         Int            @id @default(autoincrement())
+  publicId   String         @unique @default(dbgenerated("replace((gen_random_uuid())::text, '-'::text, ''::text)")) @db.VarChar(32)
+  authUserId Int
+  authUser   User           @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  projectId  Int?
+  project    CanvasProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  title      String         @default("未命名项目")
+  data       Json           @default("{}")
+  thumbnail  String?
+  sortOrder  Int            @default(0)
+  revision   Int            @default(1)
+  revision64 BigInt         @default(1)
+  projectionRevision BigInt @default(0)
+  snapshotRevision BigInt   @default(0)
+  currentSnapshotId BigInt? @unique
+  nodeCount  Int            @default(0)
+  edgeCount  Int            @default(0)
+  settings   Json           @default("{}")
+  deletedAt  DateTime?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @default(now()) @updatedAt
+  runs       CanvasRun[]
+  mutations  CanvasMutation[]
+  snapshots  CanvasSnapshot[] @relation("CanvasSnapshots")
+  currentSnapshot CanvasSnapshot? @relation("CanvasCurrentSnapshot", fields: [currentSnapshotId], references: [id], onDelete: SetNull)
+  nodeStates CanvasNodeState[]
+  edgeStates CanvasEdgeState[]
+  members    CanvasMember[]
+
+  @@index([authUserId, updatedAt])
+  @@index([authUserId, deletedAt, updatedAt])
+  @@index([authUserId, projectId, sortOrder])
+  @@index([projectId, deletedAt, sortOrder])
+  @@index([deletedAt, id])
+}
+
+model CanvasProject {
+  id         Int       @id @default(autoincrement())
+  authUserId Int
+  authUser   User      @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  name       String    @default("未命名项目")
+  sortOrder  Int       @default(0)
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now()) @updatedAt
+  canvases   Canvas[]
+
+  @@index([authUserId, deletedAt, sortOrder])
+  @@index([authUserId, updatedAt])
+}
+
+model CanvasRun {
+  id            Int       @id @default(autoincrement())
+  authUserId    Int
+  authUser      User      @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  canvasId      Int
+  canvas        Canvas    @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  status        String    @default("queued")
+  graphRevision Int
+  graphRevision64 BigInt  @default(1)
+  requestKey    String?   @unique @db.Uuid
+  requestHash   String?   @db.Char(64)
+  priority      Int       @default(0)
+  state         Json      @default("{}")
+  queuedAt      DateTime  @default(now())
+  startedAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  finishedAt    DateTime?
+  steps         CanvasRunStep[]
+
+  @@index([authUserId, updatedAt])
+  @@index([canvasId, status, updatedAt])
+  @@index([status, priority, queuedAt])
+}
+
+model CanvasRunStep {
+  id                BigInt            @id @default(autoincrement())
+  runId             Int
+  run               CanvasRun         @relation(fields: [runId], references: [id], onDelete: Cascade)
+  authUserId        Int
+  authUser          User              @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  stepKey           String            @db.VarChar(256)
+  nodeId            String            @db.VarChar(256)
+  nodeKind          String            @db.VarChar(64)
+  status            String            @default("queued")
+  priority          Int               @default(0)
+  requestKey        String            @unique @db.Uuid
+  dependencies      Json              @default("[]")
+  input             Json
+  provider          String?           @db.VarChar(128)
+  providerRequestId String?           @db.VarChar(512)
+  attempts          Int               @default(0)
+  nextRetryAt       DateTime          @default(now())
+  leaseOwner        String?           @db.VarChar(256)
+  leaseUntil        DateTime?
+  submittedAt       DateTime?
+  appliedAt         DateTime?
+  errorCode         String?           @db.VarChar(128)
+  errorMessage      String?           @db.Text
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  outputs           CanvasRunOutput[]
+
+  @@unique([runId, stepKey])
+  @@index([status, nextRetryAt, priority, createdAt])
+  @@index([authUserId, status, createdAt])
+  @@index([status, leaseUntil])
+  @@index([provider, providerRequestId])
+}
+
+model CanvasRunOutput {
+  id          BigInt        @id @default(autoincrement())
+  runStepId   BigInt
+  runStep     CanvasRunStep @relation(fields: [runStepId], references: [id], onDelete: Cascade)
+  outputSlot  String        @db.VarChar(128)
+  mediaId     String?       @db.Uuid
+  media       MediaAsset?   @relation(fields: [mediaId], references: [id], onDelete: SetNull)
+  generationId Int?
+  payload     Json
+  payloadHash String        @db.Char(64)
+  createdAt   DateTime      @default(now())
+
+  @@unique([runStepId, outputSlot])
+  @@index([mediaId])
+  @@index([generationId])
+}
+
+model Generation {
+  id               Int          @id @default(autoincrement())
+  canvasId         Int?
+  userId           String       @default("legacy")
+  authUserId       Int?
+  authUser         User?        @relation(fields: [authUserId], references: [id])
+  type             String // 'face_swap', 'image_edit', 'video_gen'
+  source           String       @default("tool") // 'tool', 'agent'
+  prompt           String
+  model            String? // e.g., 'Sora-2', 'Qwen-VL'
+  status           String // 'pending', 'success', 'failed'
+  externalProvider String?
+  externalTaskId   String?
+  requestKey       String?       @unique @db.Uuid
+  errorMsg         String?
+  localPath        String? // e.g., '/uploads/2023-10-27/uuid.png'
+  templateData     String? // JSON snapshot used by "一键同款"回填
+  createdAt        DateTime     @default(now())
+  restoredAt       DateTime?
+  updatedAt        DateTime     @default(now()) @updatedAt
+  finishedAt       DateTime?
+  usageLedger      UsageLedger?
+  sizeBytes        Int? // cached size of localPath in bytes (avoids per-request fs.stat in admin views)
+  inputMedia       GenerationInputMedia[]
+  batchOutput      ImageBatchOutput?
+  liveVideoBatchOutput LiveVideoBatchOutput?
+
+  @@index([userId])
+  @@index([authUserId])
+  // Hot paths for admin analytics & user detail: filter by user + order by time, or filter by status/type
+  @@index([authUserId, createdAt])
+  @@index([userId, createdAt])
+  @@index([authUserId, status])
+  @@index([authUserId, type])
+  @@index([authUserId, updatedAt, id])
+  @@index([userId, updatedAt, id])
+  @@index([authUserId, type, finishedAt, createdAt, id])
+  @@index([userId, type, finishedAt, createdAt, id])
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([localPath])
+  @@index([authUserId, source, status, createdAt, id], map: "Generation_canvas_history_all_idx")
+  @@index([authUserId, canvasId, status, createdAt, id], map: "Generation_canvas_history_current_idx")
+}
+
+model AdminAssetFeed {
+  id             Int        @id @default(autoincrement())
+  generationId   Int        @unique
+  userId         String
+  authUserId     Int?
+  type           String
+  status         String
+  mediaKind      String
+  thumbUrl       String?
+  displayUrl     String?
+  previewUrl     String?
+  posterUrl      String?
+  localPath      String?
+  outputPaths    Json
+  inputMaterials Json
+  errorMsg       String?
+  externalTaskId String?
+  createdAt      DateTime
+  updatedAt      DateTime
+  finishedAt     DateTime?
+  deletedAt      DateTime?
+  syncedAt       DateTime   @default(now()) @updatedAt
+
+  @@index([generationId])
+  @@index([authUserId, type, createdAt, id])
+  @@index([userId, type, createdAt, id])
+  @@index([authUserId, updatedAt, id])
+  @@index([userId, updatedAt, id])
+  @@index([createdAt, id])
+}
+
+model AdminEvent {
+  id          Int       @id @default(autoincrement())
+  eventType   String
+  entityType  String
+  entityId    String
+  userId      String?
+  authUserId  Int?
+  payload     Json      @default("{}")
+  occurredAt  DateTime  @default(now())
+  status      String    @default("pending")
+  attempts    Int       @default(0)
+  availableAt DateTime  @default(now())
+  lockedAt    DateTime?
+  lockedBy    String?
+  lastError   String?
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([eventType, occurredAt])
+  @@index([authUserId, occurredAt])
+  @@index([processedAt, id])
+  @@index([entityType, entityId])
+  @@index([status, availableAt, id])
+  @@index([status, lockedAt])
+}
+
+model AdminUserSummary {
+  adminKey        String   @id
+  userId          String
+  authUserId      Int?
+  username        String?
+  lastActiveAt    DateTime?
+  todayTaskCount  Int      @default(0)
+  last7TaskCount  Int      @default(0)
+  last30TaskCount Int      @default(0)
+  totalTaskCount  Int      @default(0)
+  successTaskCount Int     @default(0)
+  failedTaskCount Int      @default(0)
+  successRate30d  Float    @default(0)
+  failedCount30d  Int      @default(0)
+  storageBytes    BigInt   @default(0)
+  assetCount      Int      @default(0)
+  materialCount   Int      @default(0)
+  modelCost30d    Decimal  @default(0) @db.Decimal(18, 6)
+  deviceCount     Int      @default(1)
+  linkedUserIds   Json     @default("[]")
+  deletedAt       DateTime?
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@index([lastActiveAt])
+  @@index([authUserId])
+  @@index([updatedAt])
+  @@index([updatedAt, adminKey])
+  @@index([deletedAt, lastActiveAt])
+  @@index([storageBytes])
+  @@index([last30TaskCount])
+}
+
+model AdminWorkFeed {
+  generationId Int       @id
+  sourceEventId Int      @default(0)
+  userId       String
+  authUserId   Int?
+  type         String
+  status       String
+  source       String
+  provider     String?
+  model        String?
+  mediaKind    String
+  thumbUrl     String?
+  previewUrl   String?
+  displayUrl   String?
+  posterUrl    String?
+  sizeBytes    Int?
+  sizeBytes64  BigInt?
+  errorCode    String?
+  errorMsg     String?
+  createdAt    DateTime
+  finishedAt   DateTime?
+  updatedAt    DateTime
+  deletedAt    DateTime?
+
+  @@index([authUserId, createdAt, generationId])
+  @@index([authUserId, type, createdAt, generationId])
+  @@index([authUserId, status, createdAt, generationId])
+  @@index([userId, createdAt, generationId])
+  @@index([updatedAt, generationId])
+  @@index([deletedAt, createdAt])
+  @@index([sourceEventId])
+}
+
+model CanvasMutation {
+  id                 BigInt   @id @default(autoincrement())
+  canvasId           Int
+  canvas             Canvas   @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  actorUserId        Int
+  actorUser          User     @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+  clientMutationId   String   @db.Uuid
+  clientSequence     BigInt
+  payloadHash        String   @db.Char(64)
+  baseRevision       BigInt
+  revision           BigInt
+  protocolVersion    Int
+  operations         Json
+  touchedPaths       Json
+  createdAt          DateTime @default(now())
+
+  @@unique([canvasId, revision])
+  @@unique([canvasId, clientMutationId])
+  @@index([canvasId, revision])
+  @@index([actorUserId, createdAt])
+}
+
+model CanvasSnapshot {
+  id                       BigInt   @id @default(autoincrement())
+  canvasId                 Int
+  canvas                   Canvas   @relation("CanvasSnapshots", fields: [canvasId], references: [id], onDelete: Cascade)
+  currentForCanvas         Canvas?  @relation("CanvasCurrentSnapshot")
+  revision                 BigInt
+  documentSchemaVersion    Int
+  operationProtocolVersion Int
+  codec                    String   @default("gzip")
+  compressedJson           Bytes
+  uncompressedBytes        Int
+  checksumSha256           String   @db.Char(64)
+  nodeCount                Int
+  edgeCount                Int
+  createdAt                DateTime @default(now())
+
+  @@unique([canvasId, revision])
+  @@index([canvasId, createdAt])
+}
+
+model CanvasNodeState {
+  canvasId   Int
+  canvas     Canvas   @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  nodeId     String
+  nodeVersion BigInt
+  kind       String
+  positionX  Float
+  positionY  Float
+  width      Float?
+  height     Float?
+  parentId   String?
+  zIndex     Int      @default(0)
+  data       Json
+  searchText String   @default("")
+  updatedAt  DateTime @updatedAt
+
+  @@id([canvasId, nodeId])
+  @@index([canvasId, parentId])
+  @@index([canvasId, kind])
+  @@index([canvasId, updatedAt])
+}
+
+model CanvasEdgeState {
+  canvasId   Int
+  canvas     Canvas   @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  edgeId     String
+  edgeVersion BigInt
+  sourceId   String
+  targetId   String
+  bboxMinX   Float?
+  bboxMinY   Float?
+  bboxMaxX   Float?
+  bboxMaxY   Float?
+  data       Json
+  updatedAt  DateTime @updatedAt
+
+  @@id([canvasId, edgeId])
+  @@index([canvasId, sourceId])
+  @@index([canvasId, targetId])
+  @@index([canvasId, updatedAt])
+}
+
+model CanvasMember {
+  canvasId Int
+  canvas   Canvas   @relation(fields: [canvasId], references: [id], onDelete: Cascade)
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([canvasId, userId])
+  @@index([userId, role])
+}
+
+model MediaAsset {
+  id               String           @id @default(uuid()) @db.Uuid
+  ownerUserId      Int?
+  ownerUser        User?            @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
+  kind             String
+  status           String           @default("initiated")
+  originalName     String?          @db.VarChar(512)
+  declaredMime     String?          @db.VarChar(128)
+  detectedMime     String?          @db.VarChar(128)
+  sizeBytes        BigInt?
+  checksumSha256   String?          @db.Char(64)
+  storageProvider  String           @default("local")
+  quarantineKey    String?
+  originalKey      String?
+  publicUrl        String?
+  variants         Json             @default("{}")
+  metadata         Json             @default("{}")
+  failureCode      String?          @db.VarChar(128)
+  failureMessage   String?          @db.Text
+  attempts         Int              @default(0)
+  leaseOwner       String?          @db.VarChar(256)
+  leaseUntil       DateTime?
+  referenceCount   Int              @default(0)
+  retentionUntil   DateTime?
+  softDeletedAt    DateTime?
+  purgedAt         DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  references       MediaReference[]
+  runOutputs       CanvasRunOutput[]
+  generationInputs GenerationInputMedia[]
+  batchMedia       ImageBatchMedia[]
+  liveVideoBatchItems LiveVideoBatchItem[]
+  workspaceDraftMedia ToolWorkspaceDraftMedia[]
+
+  @@index([ownerUserId, createdAt])
+  @@index([ownerUserId, checksumSha256])
+  @@index([status, retentionUntil])
+  @@index([status, leaseUntil])
+  @@index([checksumSha256])
+}
+
+model MediaReference {
+  id         BigInt     @id @default(autoincrement())
+  mediaId    String     @db.Uuid
+  media      MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  sourceType String     @db.VarChar(32)
+  sourceId   String     @db.VarChar(256)
+  createdAt  DateTime   @default(now())
+
+  @@unique([mediaId, sourceType, sourceId])
+  @@index([sourceType, sourceId])
+  @@index([mediaId, sourceType])
+}
+
+model CanvasUndoMediaHold {
+  id            BigInt   @id @default(autoincrement())
+  undoSessionId String   @db.Uuid
+  canvasId      Int
+  ownerUserId   Int
+  referenceKey  String   @db.VarChar(2200)
+  mediaId       String?  @db.Uuid
+  publicRef     String?  @db.VarChar(2048)
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([undoSessionId, referenceKey])
+  @@index([expiresAt])
+  @@index([mediaId, expiresAt])
+  @@index([canvasId, ownerUserId])
+}
+
+model GenerationInputMedia {
+  id           BigInt     @id @default(autoincrement())
+  generationId Int
+  mediaId      String     @db.Uuid
+  position     Int
+  role         String
+  createdAt    DateTime   @default(now())
+
+  generation Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
+  media      MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@unique([generationId, position])
+  @@index([mediaId])
+  @@index([generationId, position])
+}
+
+model ImageBatch {
+  id             String           @id @default(uuid()) @db.Uuid
+  authUserId     Int
+  authUser       User             @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  name           String           @default("未命名批次") @db.VarChar(120)
+  mode           String           @default("style_replication") @db.VarChar(32)
+  status         String           @default("draft") @db.VarChar(32)
+  sharedPrompt   String           @default("") @db.Text
+  sharedSettings Json             @default("{}")
+  version        Int              @default(1)
+  lastSubmissionKey String?       @db.VarChar(128)
+  submittedAt    DateTime?
+  finishedAt     DateTime?
+  deletedAt      DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  groups         ImageBatchGroup[]
+  items          ImageBatchItem[]
+  media          ImageBatchMedia[]
+  outputs        ImageBatchOutput[]
+
+  @@index([authUserId, updatedAt])
+  @@index([authUserId, status, updatedAt])
+  @@index([status, submittedAt])
+}
+
+model ImageBatchGroup {
+  id         String           @id @default(uuid()) @db.Uuid
+  authUserId Int?
+  authUser   User?            @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  batchId    String           @db.Uuid
+  batch      ImageBatch       @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  position   Int
+  sequence   Int?
+  name       String           @db.VarChar(120)
+  hiddenAt   DateTime?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  items      ImageBatchItem[]
+
+  @@unique([batchId, position])
+  @@unique([authUserId, sequence])
+  @@index([batchId])
+  @@index([authUserId, hiddenAt, createdAt, id])
+}
+
+model ImageBatchItem {
+  id                    String             @id @default(uuid()) @db.Uuid
+  batchId               String             @db.Uuid
+  batch                 ImageBatch         @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  groupId               String?            @db.Uuid
+  group                 ImageBatchGroup?   @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  position              Int
+  name                  String             @default("未命名任务") @db.VarChar(120)
+  prompt                String             @default("") @db.Text
+  includeSharedPrompt   Boolean            @default(true)
+  overrides             Json               @default("{}")
+  outputCount           Int                @default(1)
+  status                String             @default("draft") @db.VarChar(32)
+  lastSubmittedSnapshot Json?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  media                 ImageBatchMedia[]
+  outputs               ImageBatchOutput[]
+
+  @@unique([batchId, position])
+  @@index([batchId, status])
+  @@index([groupId])
+}
+
+model ImageBatchMedia {
+  id        BigInt          @id @default(autoincrement())
+  batchId   String          @db.Uuid
+  batch     ImageBatch      @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  itemId    String?         @db.Uuid
+  item      ImageBatchItem? @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  mediaId   String          @db.Uuid
+  media     MediaAsset      @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+  role      String          @db.VarChar(32)
+  position  Int             @default(0)
+  createdAt DateTime        @default(now())
+
+  @@index([batchId, itemId, role, position])
+  @@index([mediaId])
+  @@index([itemId])
+}
+
+model ImageBatchOutput {
+  id              String         @id @default(uuid()) @db.Uuid
+  batchId         String         @db.Uuid
+  batch           ImageBatch     @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  itemId          String         @db.Uuid
+  item            ImageBatchItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  slotIndex       Int
+  attempt         Int            @default(1)
+  status          String         @default("queued") @db.VarChar(32)
+  requestKey      String         @unique @db.Uuid
+  requestSnapshot Json
+  generationId    Int?           @unique
+  generation      Generation?    @relation(fields: [generationId], references: [id], onDelete: SetNull)
+  errorCode       String?        @db.VarChar(128)
+  errorMessage    String?        @db.Text
+  leaseOwner      String?        @db.VarChar(256)
+  leaseUntil      DateTime?
+  nextPollAt      DateTime?
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@unique([itemId, slotIndex, attempt])
+  @@index([status, nextPollAt, createdAt])
+  @@index([status, leaseUntil])
+  @@index([batchId, status])
+}
+
+model LiveVideoBatch {
+  id                String                 @id @default(uuid()) @db.Uuid
+  authUserId        Int
+  authUser          User                   @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  requestKey        String                 @unique @db.Uuid
+  name              String                 @default("未命名视频分组") @db.VarChar(120)
+  status            String                 @default("prompt_queued") @db.VarChar(32)
+  skillSnapshot     Json
+  sharedRequirement String                 @default("") @db.Text
+  videoSettings     Json
+  version           Int                    @default(1)
+  lastSubmissionKey String?                @db.Uuid
+  submittedAt       DateTime?
+  finishedAt        DateTime?
+  deletedAt         DateTime?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  items             LiveVideoBatchItem[]
+  promptJobs        LiveVideoPromptJob[]
+  outputs           LiveVideoBatchOutput[]
+
+  @@index([authUserId, deletedAt, createdAt])
+  @@index([authUserId, status, updatedAt])
+  @@index([status, updatedAt])
+}
+
+model LiveVideoBatchItem {
+  id             String                 @id @default(uuid()) @db.Uuid
+  batchId        String                 @db.Uuid
+  batch          LiveVideoBatch         @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  position       Int
+  name           String                 @default("未命名视频任务") @db.VarChar(120)
+  sourceMediaId  String?                @db.Uuid
+  sourceMedia    MediaAsset?            @relation(fields: [sourceMediaId], references: [id], onDelete: SetNull)
+  mediaSnapshot  Json
+  prompt         String                 @default("") @db.Text
+  promptStatus   String                 @default("prompt_queued") @db.VarChar(32)
+  videoStatus    String                 @default("draft") @db.VarChar(32)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  promptJobs     LiveVideoPromptJob[]
+  outputs        LiveVideoBatchOutput[]
+
+  @@unique([batchId, position])
+  @@index([batchId, promptStatus, videoStatus])
+  @@index([sourceMediaId])
+}
+
+model LiveVideoPromptJob {
+  id              String             @id @default(uuid()) @db.Uuid
+  batchId         String             @db.Uuid
+  batch           LiveVideoBatch     @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  itemId          String             @db.Uuid
+  item            LiveVideoBatchItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  attempt         Int                @default(1)
+  requestKey      String             @unique @db.Uuid
+  skillSnapshot   Json
+  systemPrompt    String             @db.Text
+  userPrompt      String             @db.Text
+  mediaSnapshot   Json
+  status          String             @default("queued") @db.VarChar(32)
+  generatedPrompt String?            @db.Text
+  errorCode       String?            @db.VarChar(128)
+  errorMessage    String?            @db.Text
+  leaseOwner      String?            @db.VarChar(256)
+  leaseUntil      DateTime?
+  availableAt     DateTime            @default(now())
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@unique([itemId, attempt])
+  @@index([status, availableAt, leaseUntil, createdAt])
+  @@index([batchId, status])
+}
+
+model LiveVideoBatchOutput {
+  id              String             @id @default(uuid()) @db.Uuid
+  batchId         String             @db.Uuid
+  batch           LiveVideoBatch     @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  itemId          String             @db.Uuid
+  item            LiveVideoBatchItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  attempt         Int                @default(1)
+  requestKey      String             @unique @db.Uuid
+  requestSnapshot Json
+  status          String             @default("queued") @db.VarChar(32)
+  generationId    Int?               @unique
+  generation      Generation?        @relation(fields: [generationId], references: [id], onDelete: SetNull)
+  errorCode       String?            @db.VarChar(128)
+  errorMessage    String?            @db.Text
+  leaseOwner      String?            @db.VarChar(256)
+  leaseUntil      DateTime?
+  nextPollAt      DateTime?
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@unique([itemId, attempt])
+  @@index([status, nextPollAt, leaseUntil, createdAt])
+  @@index([batchId, status])
+}
+
+model AdminMediaCatalog {
+  mediaId         String    @id
+  sourceType      String
+  sourceId        String
+  userId          String?
+  authUserId      Int?
+  category        String?
+  mimeType        String?
+  mediaKind       String
+  fileUrl         String
+  thumbUrl        String?
+  previewUrl      String?
+  width           Int?
+  height          Int?
+  sizeBytes       Int?
+  storageProvider String?
+  storageKey      String?
+  selectedAt      DateTime?
+  archiveStatus   String    @default("active")
+  deletedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([authUserId, sourceType, createdAt, mediaId])
+  @@index([authUserId, category, createdAt, mediaId])
+  @@index([archiveStatus, createdAt])
+  @@index([updatedAt, mediaId])
+  @@index([sourceType, sourceId])
+}
+
+model AdminDailyStats {
+  id                Int      @id @default(autoincrement())
+  bucketKey         String   @unique
+  day               String
+  authUserId        Int?
+  userId            String
+  taskCount         Int      @default(0)
+  successCount      Int      @default(0)
+  failedCount       Int      @default(0)
+  uploadCount       Int      @default(0)
+  outputCount       Int      @default(0)
+  storageBytesDelta BigInt   @default(0)
+  totalStorageBytes BigInt   @default(0)
+  assetCount        Int      @default(0)
+  updatedAt         DateTime @updatedAt
+
+  @@index([day])
+  @@index([authUserId, day])
+  @@index([userId, day])
+}
+
+model AdminModelUsageDaily {
+  id           Int      @id @default(autoincrement())
+  bucketKey    String   @unique
+  day          String
+  authUserId   Int?
+  userId       String?
+  provider     String
+  model        String
+  module       String
+  requestCount Int      @default(0)
+  successCount Int      @default(0)
+  failedCount  Int      @default(0)
+  amount       Decimal  @default(0) @db.Decimal(18, 6)
+  currency     String   @default("CNY")
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  avgLatencyMs Int      @default(0)
+  updatedAt    DateTime @updatedAt
+
+  @@index([day])
+  @@index([authUserId, day])
+  @@index([provider, model, day])
+  @@index([module, day])
+}
+
+model AdminStorageSnapshot {
+  id               Int      @id @default(autoincrement())
+  snapshotAt       DateTime @default(now())
+  scope            String
+  pathKey          String
+  authUserId       Int?
+  fileCount        Int      @default(0)
+  totalBytes       BigInt   @default(0)
+  largestFileBytes BigInt   @default(0)
+  updatedAt        DateTime @updatedAt
+
+  @@index([snapshotAt])
+  @@index([pathKey])
+  @@index([authUserId, snapshotAt])
+  @@index([scope, snapshotAt])
+}
+
+model AdminJob {
+  jobId      String    @id @default(cuid())
+  type       String
+  status     String    @default("queued")
+  progress   Int       @default(0)
+  stage      String?
+  operator   String?
+  payload    Json      @default("{}")
+  result     Json?
+  error      String?
+  createdAt  DateTime  @default(now())
+  startedAt  DateTime?
+  updatedAt  DateTime  @updatedAt
+  finishedAt DateTime?
+  expiresAt  DateTime?
+
+  @@index([type, status, createdAt])
+  @@index([status, createdAt])
+  @@index([operator, createdAt])
+  @@index([expiresAt])
+}
+
+model AdminAuditLog {
+  id         Int      @id @default(autoincrement())
+  operator   String?
+  action     String
+  targetType String
+  targetId   String?
+  before     Json?
+  after      Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([operator, createdAt])
+  @@index([targetType, targetId])
+  @@index([action, createdAt])
+  @@index([createdAt])
+}
+
+model BillingPriceRule {
+  id              Int       @id @default(autoincrement())
+  provider        String
+  model           String
+  displayName     String?
+  module          String?
+  matchConditions Json?
+  unitType        String // "image" | "second" | "token" | "request" | "storage_mb"
+  unitPrice       Decimal   @default(0) @db.Decimal(18, 6)
+  currency        String    @default("CNY")
+  priority        Int       @default(0)
+  isActive        Boolean   @default(true)
+  effectiveFrom   DateTime  @default(now())
+  effectiveTo     DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([provider, model, isActive])
+  @@index([module, isActive])
+}
+
+model UsageLedger {
+  id               Int         @id @default(autoincrement())
+  userId           String
+  authUserId       Int?
+  username         String?
+  module           String
+  source           String      @default("tool")
+  generationId     Int?        @unique
+  generation       Generation? @relation(fields: [generationId], references: [id], onDelete: SetNull)
+  requestKey       String?     @unique @db.Uuid
+  externalProvider String?
+  externalTaskId   String?
+  model            String
+  providerModel    String?
+  status           String
+  billable         Boolean     @default(false)
+  unitType         String
+  unitCount        Decimal     @default(0) @db.Decimal(18, 6)
+  unitPrice        Decimal     @default(0) @db.Decimal(18, 6)
+  amount           Decimal     @default(0) @db.Decimal(18, 6)
+  currency         String      @default("CNY")
+  costStatus       String      @default("unpriced") // "priced" | "unpriced" | "free" | "failed" | "non_billable"
+  pricingSnapshot  Json?
+  requestSnapshot  Json?
+  usageSnapshot    Json?
+  occurredAt       DateTime    @default(now())
+  finishedAt       DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([authUserId, occurredAt])
+  @@index([userId, occurredAt])
+  @@index([model, occurredAt])
+  @@index([module, occurredAt])
+  @@index([externalProvider, model])
+  @@index([billable, costStatus])
+}
+
+model Template {
+  id               Int      @id @default(autoincrement())
+  title            String
+  description      String?
+  prompt           String
+  category         String?
+  toolType         String
+  mediaType        String
+  previewImagePath String?
+  previewVideoPath String?
+  isFeatured       Boolean  @default(false)
+  usageCount       Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  tags TemplateTag[]
+
+  @@index([category, createdAt, id])
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  templates TemplateTag[]
+}
+
+model TemplateTag {
+  templateId Int
+  tagId      Int
+
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([templateId, tagId])
+  @@index([tagId])
+  @@index([templateId])
+}
+
+model Log {
+  id             Int      @id @default(autoincrement())
+  userId         String   @default("system")
+  hiddenFromUser Boolean  @default(false)
+  category       String // 'user_action', 'generation', 'api', 'system'
+  action         String // 'page_view', 'task_create', 'api_request', etc.
+  level          String // 'info', 'warning', 'error', 'success'
+  message        String
+  metadata       String? // JSON string for additional data
+  ip             String?
+  userAgent      String?
+  duration       Int? // milliseconds, for API calls or tasks
+  generationId   Int? // link to Generation if applicable
+  createdAt      DateTime @default(now())
+  restoredAt     DateTime?
+
+  @@index([userId])
+  @@index([userId, hiddenFromUser])
+  @@index([category])
+  @@index([level])
+  @@index([createdAt])
+  @@index([generationId])
+  @@index([action, createdAt])
+  @@index([generationId, category, action, createdAt])
+}
+
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model MonitoringAlertRecord {
+  id                  String    @id @default(cuid())
+  fingerprint         String    @unique
+  activeKey           String?   @unique
+  source              String    @default("project")
+  kind                String
+  resourceKey         String
+  component           String
+  state               String
+  severity            String
+  summary             String
+  description         String
+  currentPercent      Float
+  peakPercent         Float
+  warningPercent      Float
+  criticalPercent     Float
+  resourcePath        String
+  totalBytes          BigInt
+  freeBytes           BigInt
+  startsAt            DateTime
+  lastObservedAt      DateTime
+  recoveredAt         DateTime?
+  expiresAt           DateTime?
+  acknowledgedBy      String?
+  acknowledgedAt      DateTime?
+  acknowledgementNote String?
+  silencedUntil       DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([state, startsAt])
+  @@index([expiresAt])
+  @@index([resourceKey, startsAt])
+}
+
+model SystemUpdateRecord {
+  jobId           String    @id
+  fromVersion     String?
+  toVersion       String?
+  fromCommit      String?
+  toCommit        String?
+  releaseAsset    String?
+  sha256          String?
+  operatorUserId  String?
+  operatorIp      String?
+  operatorUserAgent String?
+  startedAt       DateTime  @default(now())
+  finishedAt      DateTime?
+  status          String    @default("queued")
+  failedPhase     String?
+  errorCode       String?
+  rollbackOutcome String?
+  evidenceSha256  String?
+  sourceUpdatedAt DateTime?
+  backupPath      String?
+  backupSha256    String?
+  oldReleasePath  String?
+  newReleasePath  String?
+  logPath         String?
+  migrationBefore Json?
+  migrationAfter  Json?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  phaseEvents     SystemUpdatePhaseEvent[]
+
+  @@index([status, startedAt])
+  @@index([startedAt])
+}
+
+// Pre-aggregated daily stats per user, rebuilt by a background job.
+// Powers admin "系统概览" / "数据分析" without scanning Generation each request.
+model AnalyticsDailyByUser {
+  id              Int      @id @default(autoincrement())
+  bucketKey       String   @unique // "{day}|auth:{authUserId}" or "{day}|guest:{userId}" — 避开 NULL-distinct 坑
+  day             String // "YYYY-MM-DD" local-day key
+  authUserId      Int? // null = 游客身份
+  userId          String // textual user id (auth 时存 authUserId 字符串;guest 时存原 userId)
+  generationCount Int      @default(0)
+  successCount    Int      @default(0)
+  failedCount     Int      @default(0)
+  imageCount      Int      @default(0)
+  videoCount      Int      @default(0)
+  faceCount       Int      @default(0)
+  otherCount      Int      @default(0)
+  storageBytes    BigInt   @default(0)
+  updatedAt       DateTime @updatedAt
+
+  @@index([day])
+  @@index([authUserId, day])
+  @@index([userId, day])
+}
+
+model SystemUpdatePhaseEvent {
+  id              BigInt    @id @default(autoincrement())
+  jobId           String
+  sequence        Int
+  phase           String
+  progress        Int
+  message         String
+  errorCode       String?
+  rollbackOutcome String?
+  evidenceSha256  String
+  occurredAt      DateTime
+  createdAt       DateTime  @default(now())
+
+  record SystemUpdateRecord @relation(fields: [jobId], references: [jobId], onDelete: Cascade)
+
+  @@unique([jobId, sequence])
+  @@index([jobId, occurredAt])
+}
+
+model TrendingTopic {
+  id        Int      @id @default(autoincrement())
+  platform  String
+  keyword   String
+  rank      Int?
+  heat      String?
+  category  String?
+  fetchedAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([platform])
+  @@index([fetchedAt])
+  @@index([expiresAt])
+}
+
+model MediaLibraryItem {
+  id              Int      @id @default(autoincrement())
+  scope           String // 'shared' | 'private'
+  kind            String // 'image' | 'video'
+  groupName       String?
+  title           String
+  fileUrl         String   @map("ossUrl")
+  thumbnailUrl    String?
+  mimeType        String?
+  sizeBytes       Int?
+  tags            String   @default("[]")
+  sortOrder       Int      @default(0)
+  ownerUserId     Int?
+  createdByUserId Int?
+  isDeleted       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  ownerUser      User?                  @relation("MediaLibraryOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+
+  @@index([scope, kind, createdAt])
+  @@index([scope, groupName, createdAt])
+  @@index([ownerUserId, scope, createdAt])
+  @@index([ownerUserId, groupName, createdAt])
+  @@index([isDeleted, createdAt])
+}
+
+model VirtualAvatar {
+  id           Int       @id @default(autoincrement())
+  ownerUserId  Int
+  ownerUser    User      @relation(fields: [ownerUserId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  sourceUrl    String
+  coverImage   String?
+  provider     String    @default("apimart")
+  projectName  String    @default("default")
+  groupId      String?
+  taskId       String?
+  assetId      String?
+  assetUri     String?
+  status       String    @default("processing")
+  failedReason String?
+  tags         String    @default("[]")
+  rawResponse  Json?
+  approvedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([ownerUserId, status, createdAt])
+  @@index([taskId])
+  @@index([assetUri])
+}
+
+model PromptReverseTask {
+  id                Int       @id @default(autoincrement())
+  authUserId        Int
+  authUser          User      @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  userId            String
+  status            String    @default("pending")
+  surface           String    @default("toolbox_image") @db.VarChar(32)
+  systemPrompt      String    @db.Text
+  userPrompt        String    @db.Text
+  requestedModel    String?
+  llmProviderId     String?
+  model             String?
+  mediaUrls         Json      @default("[]")
+  resolvedMediaUrls Json      @default("[]")
+  generatedPrompt   String?   @db.Text
+  errorMsg          String?   @db.Text
+  rawResponse       Json?
+  skillSource       String?   @db.VarChar(16)
+  skillId           BigInt?
+  skillName         String?   @db.VarChar(64)
+  skillRevision     Int?
+  startedAt         DateTime?
+  finishedAt        DateTime?
+  deletedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([authUserId, createdAt])
+  @@index([authUserId, status, createdAt])
+  @@index([authUserId, deletedAt, createdAt])
+}
+
+model ToolWorkspaceDraft {
+  id            String                    @id @default(uuid()) @db.Uuid
+  authUserId    Int
+  authUser      User                      @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  tool          String                    @db.VarChar(16)
+  schemaVersion Int                       @default(1)
+  payload       Json                      @default("{}")
+  version       Int                       @default(1)
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  media         ToolWorkspaceDraftMedia[]
+
+  @@unique([authUserId, tool])
+  @@index([authUserId, updatedAt])
+}
+
+model ToolWorkspaceDraftMedia {
+  id        BigInt             @id @default(autoincrement())
+  draftId   String             @db.Uuid
+  draft     ToolWorkspaceDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  mediaId   String             @db.Uuid
+  media     MediaAsset         @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+  position  Int
+  slot      String?            @db.VarChar(16)
+  createdAt DateTime           @default(now())
+
+  @@unique([draftId, position])
+  @@index([mediaId])
+}
+
+model RolePositioningDraft {
+  id                    Int      @id @default(autoincrement())
+  authUserId            Int
+  authUser              User     @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+  surface               String   @db.VarChar(32)
+  systemPrompt          String   @default("") @db.Text
+  reversePrompt         String   @default("") @db.Text
+  reversePromptApplied  Boolean  @default(false)
+  activeReverseTaskId   Int?
+  continuation          Json?
+  selectedSkillSource   String?  @db.VarChar(16)
+  selectedSkillId       BigInt?
+  resultSkillSource     String?  @db.VarChar(16)
+  resultSkillId         BigInt?
+  resultSkillName       String?  @db.VarChar(64)
+  resultSkillRevision   Int?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@unique([authUserId, surface])
+  @@index([authUserId, updatedAt])
+}
+
+model MaterialAsset {
+  id               Int      @id @default(autoincrement())
+  category         String?
+  title            String
+  imageUrl         String
+  thumbnailUrl     String?
+  previewUrl       String?
+  mimeType         String?
+  sizeBytes        Int?
+  media            Json     @default("[]")
+  mediaCount       Int      @default(1)
+  selectedMediaId  String?
+  tags             String   @default("[]")
+  creatorName      String?
+  modelName        String?
+  inspiration      String?
+  sortOrder        Int      @default(0)
+  createdByUserId  Int?
+  selectedByUserId Int?
+  selectedAt       DateTime?
+  listedAt         DateTime?
+  isDeleted        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  createdByUser  User?                   @relation("MaterialAssetCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  selectedByUser User?                   @relation("MaterialAssetSelectedBy", fields: [selectedByUserId], references: [id], onDelete: SetNull)
+  downloads      MaterialAssetDownload[]
+  selectionEvents MaterialAssetSelectionEvent[]
+
+  @@index([category, createdAt])
+  @@index([isDeleted, category, createdAt])
+  @@index([selectedByUserId, selectedAt])
+  @@index([isDeleted, selectedByUserId, createdAt])
+  @@index([isDeleted, selectedByUserId, listedAt])
+  @@index([updatedAt, id])
+  @@index([creatorName, isDeleted])
+  @@index([createdByUserId, createdAt])
+  @@index([modelName])
+}
+
+model MaterialAssetOption {
+  id        Int      @id @default(autoincrement())
+  kind      String
+  value     String
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([kind, value])
+  @@index([kind, value])
+}
+
+model MaterialAssetDownload {
+  id           Int      @id @default(autoincrement())
+  assetId      Int
+  userId       Int
+  username     String
+  downloadedAt DateTime @default(now())
+
+  asset MaterialAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([assetId, downloadedAt])
+  @@index([userId, downloadedAt])
+}
+
+model MaterialAssetSelectionEvent {
+  id               Int      @id @default(autoincrement())
+  assetId          Int
+  userId           Int?
+  username         String
+  action           String
+  reason           String?
+  operatorUsername String?
+  assetTitle       String?
+  assetCategory    String?
+  assetImageUrl    String?
+  assetThumbnailUrl String?
+  selectedMediaId  String?
+  selectedMediaUrl String?
+  occurredAt       DateTime @default(now())
+
+  asset MaterialAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  user  User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([assetId, occurredAt])
+  @@index([userId, occurredAt])
+  @@index([action, occurredAt])
+}
+
+model AgentConversation {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  title         String?
+  summary       String?
+  summaryUntil  Int?
+  summaryRevision Int     @default(0)
+  summarySource Json?
+  messageCount  Int       @default(0)
+  status        String    @default("active")
+  deletedAt     DateTime?
+  purgeAfter    DateTime?
+  deletedBy     String?
+  lastMessageAt DateTime?
+  version       Int       @default(1)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages        AgentMessage[]
+  events          AgentEvent[]
+  generationLinks AgentGenerationLink[]
+
+  @@index([userId, updatedAt])
+  @@index([userId, status])
+  @@index([userId, deletedAt, lastMessageAt])
+  @@index([purgeAfter])
+}
+
+model AgentMessage {
+  id             Int      @id @default(autoincrement())
+  conversationId Int
+  userId         Int
+  role           String
+  kind           String   @default("text")
+  runId          Int?
+  sequence       Int?
+  status         String   @default("completed")
+  content        String
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  conversation AgentConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@unique([conversationId, sequence])
+  @@index([runId, createdAt])
+  @@index([userId, createdAt])
+}
+
+model UserMemory {
+  id              Int       @id @default(autoincrement())
+  userId          Int
+  type            String
+  key             String
+  value           String
+  history         String?
+  confidence      Float     @default(0.8)
+  version         Int       @default(1)
+  usageCount      Int       @default(0)
+  lastUsedAt      DateTime?
+  sourceMessageId Int?
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, key])
+  @@index([userId, type])
+  @@index([userId, isActive])
+  @@index([userId, lastUsedAt])
+}
+
+model AgentMemoryProfile {
+  id           Int       @id @default(autoincrement())
+  userId       Int       @unique
+  revision     Int       @default(0)
+  deletedAt    DateTime?
+  fileSyncedAt DateTime?
+  syncError    String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AgentRun {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  conversationId Int?
+  model          String
+  purpose        String
+  status         String
+  requestKey     String?    @unique @db.Uuid
+  routeSnapshot  Json?
+  brief          Json?
+  plan           Json?
+  generationApproval Json?
+  runtimeVersion Int       @default(1)
+  planRevision   Int       @default(0)
+  deliverySpec   Json?
+  validationSummary Json?
+  budgetPolicy   Json?
+  budgetRevision Int       @default(1)
+  skillSnapshot  Json?
+  lastProgressAt DateTime?
+  activeMs       Int       @default(0)
+  repairCount    Int       @default(0)
+  currentStage   String?
+  waitingReason  String?
+  attempt        Int        @default(0)
+  availableAt    DateTime?
+  leaseOwner     String?
+  leaseUntil     DateTime?
+  startedAt      DateTime?
+  finishedAt     DateTime?
+  errorCode      String?
+  cancelRequestedAt DateTime?
+  inputTokens    Int?
+  outputTokens   Int?
+  latencyMs      Int?
+  error          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+
+  events          AgentEvent[]
+  generationLinks AgentGenerationLink[]
+  steps           AgentStepExecution[]
+  artifacts       AgentArtifact[]
+  calls           AgentCallRecord[]
+
+  @@index([userId, createdAt])
+  @@index([purpose, status])
+  @@index([status, availableAt, leaseUntil])
+  @@index([conversationId, createdAt])
+}
+
+model AgentStepExecution {
+  id                 String    @id @default(cuid())
+  runId              Int
+  stepKey            String
+  introducedRevision Int
+  definitionSnapshot Json
+  status             String    @default("pending")
+  version            Int       @default(1)
+  activeAttemptNo    Int       @default(0)
+  result             Json?
+  errorCode          String?
+  nextEligibleAt     DateTime?
+  startedAt          DateTime?
+  finishedAt         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  run                AgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  attempts           AgentStepAttempt[]
+  artifacts          AgentArtifact[]
+  @@unique([runId, stepKey])
+  @@index([runId, status, nextEligibleAt])
+}
+
+model AgentStepAttempt {
+  id             String   @id @default(cuid())
+  stepId         String
+  attemptNo      Int
+  requestKey     String   @unique @db.Uuid
+  state          String   @default("prepared")
+  inputSnapshot  Json
+  inputDigest    String
+  submissionRefs Json
+  reservedUnits  Int      @default(0)
+  budgetRevision Int
+  errorClass     String?
+  retryCount     Int      @default(0)
+  startedAt      DateTime @default(now())
+  finishedAt     DateTime?
+  step           AgentStepExecution @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  artifacts      AgentArtifact[]
+  @@unique([stepId, attemptNo])
+  @@index([state, startedAt])
+}
+
+model AgentArtifact {
+  id               String   @id @default(cuid())
+  runId            Int
+  stepId           String
+  attemptId        String
+  outputSlot       Int
+  kind             String
+  generationId     Int?
+  source           Json?
+  storageRef       String?
+  text             String?  @db.Text
+  contentVersion   String
+  availability     String   @default("unverified")
+  facts            Json?
+  observation      Json?
+  validationReport Json?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  run              AgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  step             AgentStepExecution @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  attempt          AgentStepAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  @@unique([attemptId, outputSlot])
+  @@index([runId, stepId, outputSlot])
+  @@index([generationId])
+}
+
+// Minimal reconciliation identity survives deleting conversation content. No raw requests/keys.
+model AgentCallRecord {
+  id                  String   @id @default(cuid())
+  runId               Int?
+  stepId              String?
+  attemptId           String?
+  logicalOperationKey String
+  callAttemptNo       Int
+  purpose             String
+  state               String
+  routeSnapshot       Json?
+  inputDigest         String?
+  result              Json?
+  usage               Json?
+  priceSnapshot       Json?
+  reservedInputTokens Int
+  reservedOutputTokens Int
+  inputTokens         Int?
+  outputTokens        Int?
+  reservedAmount      Decimal? @db.Decimal(20, 8)
+  amount              Decimal? @db.Decimal(20, 8)
+  currency            String?
+  costState           String   @default("unknown")
+  budgetRevision      Int
+  errorCode           String?
+  startedAt           DateTime @default(now())
+  finishedAt          DateTime?
+  run                 AgentRun? @relation(fields: [runId], references: [id], onDelete: SetNull)
+  @@unique([logicalOperationKey, callAttemptNo])
+  @@index([runId, startedAt])
+  @@index([state, startedAt])
+}
+
+model AgentEvent {
+  id             BigInt   @id @default(autoincrement())
+  runId          Int
+  conversationId Int
+  sequence       Int
+  type           String
+  payload        Json
+  createdAt      DateTime @default(now())
+
+  run          AgentRun          @relation(fields: [runId], references: [id], onDelete: Cascade)
+  conversation AgentConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([runId, sequence])
+  @@index([conversationId, id])
+}
+
+model AgentGenerationLink {
+  id             BigInt    @id @default(autoincrement())
+  runId          Int
+  conversationId Int
+  messageId      Int?
+  generationId   Int
+  taskType       String
+  stepKey        String
+  requestKey     String    @unique @db.Uuid
+  userDeletedAt  DateTime?
+  purgeAfter     DateTime?
+  createdAt      DateTime  @default(now())
+
+  run          AgentRun          @relation(fields: [runId], references: [id], onDelete: Cascade)
+  conversation AgentConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([runId, stepKey])
+  @@index([conversationId, createdAt])
+  @@index([generationId])
+  @@index([purgeAfter])
+}
+
+/// 用户数据导出任务（异步打包）。点击导出后入队，后台 worker 流式打包到磁盘，
+/// 前端轮询进度，完成后凭一次性 token 流式下载。
+model UserExportJob {
+  id         String    @id @default(cuid())
+  userId     String
+  authUserId Int?
+  status     String    @default("pending") // pending|running|done|error|expired
+  options    String? // 导出勾选项 JSON
+  progress   Int       @default(0) // 0-100
+  stage      String? // query|collect|pack|done
+  filePath   String? // 生成的 zip 磁盘绝对路径（不在 public 下）
+  fileName   String? // 面向用户的下载文件名
+  fileSize   BigInt? // 最终文件大小（字节）
+  token      String? // 一次性下载凭证
+  error      String? // 失败原因
+  manifest   String? // 完成后的 stats/missing JSON
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  startedAt  DateTime?
+  finishedAt DateTime?
+  expiresAt  DateTime? // 过期清理时间
+
+  @@index([status])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model UserImportJob {
+  id         String    @id @default(cuid())
+  status     String    @default("pending") // pending|running|done|error|expired|cancelled
+  stage      String? // upload|parse|read|check|db_user|db_gen|db_other|db_agent|db_logs|seq|presets|files|done
+  progress   Int       @default(0) // 0-100
+  filePath   String?
+  fileName   String?
+  fileSize   BigInt?
+  error      String?
+  manifest   String?
+  stats      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  startedAt  DateTime?
+  finishedAt DateTime?
+  expiresAt  DateTime?
+
+  @@index([status])
+  @@index([expiresAt])
+}

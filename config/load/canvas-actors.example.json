@@ -1,0 +1,9 @@
+[
+  {
+    "canvasId": 101,
+    "nodeId": "load-node-101",
+    "cookie": "next-auth.session-token=replace-in-private-file",
+    "baseRevision": "1",
+    "clientSequence": 0
+  }
+]

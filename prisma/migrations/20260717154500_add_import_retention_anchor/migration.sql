@@ -1,0 +1,2 @@
+ALTER TABLE "Generation" ADD COLUMN "restoredAt" TIMESTAMP(3);
+ALTER TABLE "Log" ADD COLUMN "restoredAt" TIMESTAMP(3);

@@ -1,0 +1,11 @@
+{
+  "protocolVersion": 1,
+  "operations": [
+    {
+      "opId": "golden-move",
+      "kind": "node.move",
+      "nodeId": "prompt-1",
+      "position": { "x": 30, "y": 40 }
+    }
+  ]
+}

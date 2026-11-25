@@ -1,0 +1,169 @@
+{
+  "format": "inkvia-price-drafts-v1",
+  "drafts": [
+    {
+      "id": "cca2c19ef5cd32ecc673e664041e982ac0b9df3e8c64932111242d7a8f80a772",
+      "provider": "bailian",
+      "model": "qwen-image-3.0",
+      "module": "image",
+      "label": "Qwen-Image-3.0",
+      "currency": "CNY",
+      "notes": "来源 https://docs.bailian.console.aliyun.com/zh/model-studio/model-pricing；2026-09-22 核对。当前项目为 cn-beijing 接入点，采用华北2（北京）在线调用标准价，人民币 CNY，无美元或积分换算；不扣减账户免费额度，不应用 Batch、资源包或限时折扣；未设置生效日。标准版 1K/2K 输出 0.18 元/张；Pro 1K 0.25、2K 0.50 元/张。两者输入参考图均为 0.02 元/张，无首张免费。Pro 自动构图时上游决定分辨率，缺少明确分辨率不会猜价。",
+      "rows": [
+        {
+          "conditions": {
+            "providerModel": "qwen-image-3.0-pro",
+            "resolution": "1K"
+          },
+          "unitType": "image",
+          "price": "0.25"
+        },
+        {
+          "conditions": {
+            "providerModel": "qwen-image-3.0-pro",
+            "resolution": "2K"
+          },
+          "unitType": "image",
+          "price": "0.5"
+        },
+        {
+          "conditions": {
+            "providerModel": "qwen-image-3.0"
+          },
+          "unitType": "image",
+          "price": "0.18"
+        },
+        {
+          "conditions": {},
+          "unitType": "input_image",
+          "price": "0.02"
+        }
+      ]
+    },
+    {
+      "id": "3955ecb5d9f0fa1e8430a64881c0c7801582c4ee99164f56ebccc7f2dc03851b",
+      "provider": "bailian",
+      "model": "wan3.0-video",
+      "module": "video",
+      "label": "Wan3.0",
+      "currency": "CNY",
+      "notes": "来源 https://docs.bailian.console.aliyun.com/zh/model-studio/model-pricing；2026-09-22 核对。当前项目为 cn-beijing 接入点，采用华北2（北京）在线调用标准价，人民币 CNY，无美元或积分换算；不扣减账户免费额度，不应用 Batch、资源包或限时折扣；未设置生效日。输入视频秒数与成功输出视频秒数相加计费，单位元/秒。页面另列限时7折，此草稿沿用标准价口径，不自动应用或推断优惠有效期。",
+      "rows": [
+        {
+          "conditions": {
+            "resolution": "1080p"
+          },
+          "unitType": "second",
+          "price": "1.2"
+        },
+        {
+          "conditions": {
+            "resolution": "480p"
+          },
+          "unitType": "second",
+          "price": "0.3"
+        },
+        {
+          "conditions": {
+            "resolution": "720p"
+          },
+          "unitType": "second",
+          "price": "0.6"
+        }
+      ]
+    },
+    {
+      "id": "d0ec09989009086e0f7f3ed5b2de9eb5c7ee7f44e03a8812fe606ae3501bacdd",
+      "provider": "bailian",
+      "model": "qwen3.8-max",
+      "module": "agent",
+      "label": "qwen3.8-max",
+      "currency": "CNY",
+      "notes": "来源 https://docs.bailian.console.aliyun.com/zh/model-studio/model-pricing；2026-09-22 核对。当前项目为 cn-beijing 接入点，采用华北2（北京）在线调用标准价，人民币 CNY，无美元或积分换算；不扣减账户免费额度，不应用 Batch、资源包或限时折扣；未设置生效日。用户控制台截图 codex-clipboard-demo-request.png：输入12、输出36、普通缓存命中1.5、显式缓存创建15，单位元/百万Token。当前项目未发送 cache_control，采用普通缓存命中价。截图另列显式缓存命中1元，不能与普通命中价混用；未来启用显式缓存前须补齐模式区分。输出含思维链，不采用Batch价格。",
+      "rows": [
+        {
+          "conditions": {},
+          "unitType": "cache_creation_million_token",
+          "price": "15"
+        },
+        {
+          "conditions": {},
+          "unitType": "cached_million_token",
+          "price": "1.5"
+        },
+        {
+          "conditions": {},
+          "unitType": "input_million_token",
+          "price": "12"
+        },
+        {
+          "conditions": {},
+          "unitType": "output_million_token",
+          "price": "36"
+        }
+      ]
+    },
+    {
+      "id": "a4024dce3c150f67600437fe0020439c49825f6769cb220981e077b90af0fc35",
+      "provider": "bailian",
+      "model": "qwen3.8-flash",
+      "module": "agent",
+      "label": "qwen3.8-flash",
+      "currency": "CNY",
+      "notes": "来源 https://docs.bailian.console.aliyun.com/zh/model-studio/model-pricing；2026-09-22 核对。当前项目为 cn-beijing 接入点，采用华北2（北京）在线调用标准价，人民币 CNY，无美元或积分换算；不扣减账户免费额度，不应用 Batch、资源包或限时折扣；未设置生效日。用户控制台截图 codex-clipboard-demo-request.png：输入0.8、输出2.7、普通及显式缓存命中0.1、显式缓存创建1.25，单位元/百万Token。创建价格以控制台为准，不用通用125%推算。输出含思维链，不采用Batch价格。",
+      "rows": [
+        {
+          "conditions": {},
+          "unitType": "cache_creation_million_token",
+          "price": "1.25"
+        },
+        {
+          "conditions": {},
+          "unitType": "cached_million_token",
+          "price": "0.1"
+        },
+        {
+          "conditions": {},
+          "unitType": "input_million_token",
+          "price": "0.8"
+        },
+        {
+          "conditions": {},
+          "unitType": "output_million_token",
+          "price": "2.7"
+        }
+      ]
+    },
+    {
+      "id": "dce3e88457b3fa79898cbb800bb20c02b84b7fbd73fa67ca6dbc606a86d12116",
+      "provider": "bailian",
+      "model": "qwen3.8-omni-flash",
+      "module": "agent",
+      "label": "qwen3.8-omni-flash",
+      "currency": "CNY",
+      "notes": "来源 https://docs.bailian.console.aliyun.com/zh/model-studio/model-pricing；2026-09-22 核对。当前项目为 cn-beijing 接入点，采用华北2（北京）在线调用标准价，人民币 CNY，无美元或积分换算；不扣减账户免费额度，不应用 Batch、资源包或限时折扣；未设置生效日。输入0.8、输出2.7、缓存命中0.1元/百万Token，采用主模型报价，不是realtime音频报价。官网未列显式缓存创建价，该项留空，不能写成0。",
+      "rows": [
+        {
+          "conditions": {},
+          "unitType": "cache_creation_million_token",
+          "price": ""
+        },
+        {
+          "conditions": {},
+          "unitType": "cached_million_token",
+          "price": "0.1"
+        },
+        {
+          "conditions": {},
+          "unitType": "input_million_token",
+          "price": "0.8"
+        },
+        {
+          "conditions": {},
+          "unitType": "output_million_token",
+          "price": "2.7"
+        }
+      ]
+    }
+  ]
+}

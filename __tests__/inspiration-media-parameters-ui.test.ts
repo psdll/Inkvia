@@ -1,0 +1,51 @@
+// @vitest-environment jsdom
+import * as React from "react";
+import { createRoot, type Root } from "react-dom/client";
+import { act, Simulate } from "react-dom/test-utils";
+import { afterEach, expect, it, vi } from "vitest";
+vi.mock("@/components/templates/inspiration-detail-fullscreen", () => ({ InspirationDetailFullscreen: () => null }));
+vi.mock("@/components/ui/frosted-select", () => ({ FrostedSelect: ({ value, onChange, options, ariaLabel }: any) => React.createElement("select", { value, "aria-label": ariaLabel, onChange: (e: any) => onChange(e.target.value) }, options.map((option: any) => React.createElement("option", { key: option.value, value: option.value }, option.label))) }));
+vi.mock("@/lib/client/inflight-json", () => ({ fetchJsonOnce: async (url: string) => {
+  const category = new URL(url, "http://localhost").searchParams.get("category");
+  if (!category) return { ok: true, json: { data: [] } };
+  const id = category === "video" ? "doubao-seedance-2-0-260128" : category === "face" ? "face-swap" : "nano-banana-pro";
+  return { ok: true, json: { success: true, models: [{ id, label: id }] } };
+} }));
+import InspirationTemplatesPanel from "@/components/admin/InspirationTemplatesPanel";
+let host: HTMLDivElement;
+let root: Root;
+afterEach(async () => { if (root) await act(async () => root.unmount()); host?.remove(); vi.unstubAllGlobals(); });
+it("switches model, controls and submitted parameters with the media selector, clearing incompatible overrides", async () => {
+  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  const request = vi.fn(async (_url: string, _options: RequestInit) => new Response(JSON.stringify({ success: true })));
+  vi.stubGlobal("fetch", request);
+  host = document.createElement("div"); document.body.append(host); root = createRoot(host);
+  await act(async () => root.render(React.createElement(InspirationTemplatesPanel)));
+  const select = (label: string) => host.querySelector(`select[aria-label="${label}"]`) as HTMLSelectElement;
+  const params = () => JSON.parse((host.querySelector("#inspiration-params") as HTMLTextAreaElement).value);
+  const change = async (node: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, value: string) => {
+    await act(async () => { node.value = value; Simulate.change(node); });
+  };
+  expect(params().model).toBe("nano-banana-pro");
+  await change(host.querySelector("#inspiration-params")!, '{"model":"stale-image-model","imageCount":99}');
+  await change(select("媒体类型"), "video");
+  expect(select("工具类型")).toBeNull();
+  expect(select("视频时长")).not.toBeNull();
+  expect(select("宽高比")).toBeNull();
+  expect(select("模型").value).toBe("doubao-seedance-2-0-260128");
+  expect(params()).toMatchObject({ model: "doubao-seedance-2-0-260128", duration: expect.any(Number) });
+  expect(params()).not.toHaveProperty("imageCount");
+  await act(async () => Simulate.submit(host.querySelector("form")!));
+  const sent = request.mock.calls[0][1].body as FormData;
+  expect(sent.get("toolType")).toBe("video");
+  expect(sent.get("mediaType")).toBe("video");
+  expect(JSON.parse(String(sent.get("paramsJson")))).toHaveProperty("duration");
+  await change(select("媒体类型"), "image");
+  expect(select("视频时长")).toBeNull();
+  expect(select("宽高比")).not.toBeNull();
+  expect(params()).toMatchObject({ model: "nano-banana-pro", imageCount: 1 });
+  expect(params()).not.toHaveProperty("duration");
+  await change(select("媒体类型"), "video");
+  expect(params()).toHaveProperty("duration");
+  expect(params()).not.toHaveProperty("similarity");
+});

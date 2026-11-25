@@ -1,0 +1,54 @@
+.sheet {
+  --price-group: var(--panel-2);
+  --price-accent: var(--primary-bg);
+  --price-draft: #946100;
+  color: var(--app-fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+:global(.dark) .sheet {
+  --panel-bg: #191b1f;
+  --panel-2: #24272c;
+  --input-bg: #191b1f;
+  --border: #34383f;
+  --app-fg: #e8eaf0;
+  --app-muted: #a4adba;
+  --price-group: #20242a;
+  --price-accent: #79aeff;
+  --price-draft: #e8b56a;
+}
+
+.sheet table {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.sheet td {
+  height: 28px;
+}
+
+.sheet tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.sheet button:focus-visible,
+.sheet a:focus-visible,
+.sheet input:focus-visible {
+  outline: 2px solid var(--price-accent);
+  outline-offset: 2px;
+}
+
+.groupHeading {
+  background: var(--price-group);
+}
+
+.draft {
+  color: var(--price-draft);
+}
+
+.model:hover {
+  color: var(--price-accent);
+}

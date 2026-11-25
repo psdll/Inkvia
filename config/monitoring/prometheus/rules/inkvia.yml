@@ -1,0 +1,96 @@
+groups:
+  - name: inkvia-host
+    rules:
+      - alert: InkviaHostCpuHigh
+        expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 10m
+        labels:
+          severity: warning
+          service: server
+        annotations:
+          summary: 服务器 CPU 持续偏高
+          description: CPU 使用率持续 10 分钟超过 85%，请检查进程负载。
+
+      - alert: InkviaHostMemoryHigh
+        expr: 100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 90
+        for: 10m
+        labels:
+          severity: critical
+          service: server
+        annotations:
+          summary: 服务器内存紧张
+          description: 可用内存持续不足，请检查 Web、Worker 和监控进程。
+
+      - alert: InkviaHostDiskHigh
+        expr: 100 * (1 - node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) > 85
+        for: 15m
+        labels:
+          severity: warning
+          service: server
+        annotations:
+          summary: 服务器磁盘空间偏低
+          description: 磁盘使用率超过 85%，请检查日志保留和上传文件增长。
+
+      - alert: InkviaHostDiskCritical
+        expr: 100 * (1 - node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) > 95
+        for: 5m
+        labels:
+          severity: critical
+          service: server
+        annotations:
+          summary: 服务器磁盘即将写满
+          description: 磁盘使用率超过 95%，需立即释放安全可删除的历史日志空间。
+
+  - name: inkvia-services
+    rules:
+      - alert: InkviaServiceUnavailable
+        expr: up{job=~"inkvia-web|postgres|prometheus|loki|tempo|alloy|alertmanager"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: monitoring
+        annotations:
+          summary: 关键服务不可用
+          description: "{{ $labels.job }} 已连续 2 分钟无法采集。"
+
+      - alert: InkviaWorkerHeartbeatMissing
+        expr: canvas_worker_heartbeat_missing > 0 or canvas_worker_heartbeat_age_seconds > 120
+        for: 2m
+        labels:
+          severity: critical
+          service: canvas-worker
+        annotations:
+          summary: Canvas Worker 心跳异常
+          description: Worker 没有心跳或心跳已超过 120 秒。
+
+      - alert: InkviaCanvasQueueOld
+        expr: canvas_run_wait_duration_ms > 300000
+        for: 5m
+        labels:
+          severity: warning
+          service: canvas-worker
+        annotations:
+          summary: Canvas 队列等待过久
+          description: 最老任务已等待超过 5 分钟。
+
+      - alert: InkviaCanvasProjectionMismatch
+        expr: canvas_projection_checksum_mismatch > 0
+        for: 1m
+        labels:
+          severity: critical
+          service: canvas
+        annotations:
+          summary: Canvas 投影数据不一致
+          description: 检测到 Canvas 投影版本或校验不一致，需要人工排查。
+
+  - name: inkvia-postgres
+    rules:
+      - alert: InkviaPostgresConnectionsHigh
+        expr: 100 * sum(pg_stat_activity_count) / clamp_min(sum(pg_settings_max_connections), 1) > 80
+        for: 10m
+        labels:
+          severity: warning
+          service: postgresql
+        annotations:
+          summary: PostgreSQL 连接使用率偏高
+          description: 数据库连接使用率持续超过 80%，仅检查连接和慢查询，不从网页重启数据库。

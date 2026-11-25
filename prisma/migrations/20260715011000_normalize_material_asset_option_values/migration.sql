@@ -1,0 +1,3 @@
+-- Intentionally empty. Historical MaterialAsset and MaterialAssetOption values
+-- are never normalized during automatic deployment.
+-- Future writes are normalized by lib/material-asset-options.ts.

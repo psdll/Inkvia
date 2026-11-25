@@ -1,0 +1,85 @@
+{
+  "text": "/skill:personal:07 一张家庭背景图",
+  "calls": [
+    {
+      "id": "demo-id-6",
+      "name": "image_generate",
+      "type": "toolCall",
+      "arguments": {
+        "facts": [
+          {
+            "field": "image.quantity",
+            "value": 1,
+            "source": {
+              "kind": "message",
+              "quote": "一张家庭背景图",
+              "sourceId": "00000000-0000-4000-8000-000000000014"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.initialCalls",
+            "value": 1,
+            "source": {
+              "kind": "message",
+              "quote": "一张家庭背景图",
+              "sourceId": "00000000-0000-4000-8000-000000000014"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "intent",
+            "value": "generate",
+            "source": {
+              "kind": "message",
+              "quote": "一张家庭背景图",
+              "sourceId": "00000000-0000-4000-8000-000000000014"
+            },
+            "strength": "hard"
+          }
+        ],
+        "params": {
+          "count": 1,
+          "resolution": "2K",
+          "aspectRatio": "3:4"
+        },
+        "prompt": "小台灯放在浅色桌面，窗边有柔和自然光，主体完整入画。"
+      }
+    },
+    {
+      "id": "demo-id-7",
+      "name": "image_generate",
+      "type": "toolCall",
+      "arguments": {
+        "facts": [
+          {
+            "field": "image.quantity",
+            "value": 1,
+            "source": {
+              "kind": "message",
+              "quote": "一张家庭背景图",
+              "sourceId": "00000000-0000-4000-8000-000000000014"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "intent",
+            "value": "generate",
+            "source": {
+              "kind": "message",
+              "quote": "一张家庭背景图",
+              "sourceId": "00000000-0000-4000-8000-000000000014"
+            },
+            "strength": "hard"
+          }
+        ],
+        "params": {
+          "count": 1,
+          "resolution": "2K",
+          "aspectRatio": "3:4"
+        },
+        "prompt": "小台灯放在浅色桌面，窗边有柔和自然光，主体完整入画。"
+      }
+    }
+  ]
+}

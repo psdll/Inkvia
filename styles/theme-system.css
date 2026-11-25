@@ -1,0 +1,152 @@
+html.dark[data-theme="dark"],
+html[data-theme="dark"] {
+  --color-bg-base: #000000;
+  --color-bg-sidebar: rgba(255, 255, 255, 0.03);
+  --color-bg-card: #202020;
+  --color-bg-card-hover: #303030;
+  --color-bg-input: #202020;
+  --color-bg-elevated: #282828;
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-hover: rgba(255, 255, 255, 0.18);
+  --color-border-active: rgba(255, 255, 255, 0.26);
+  --color-border-dashed: rgba(255, 255, 255, 0.14);
+  --color-text-primary: rgba(255, 255, 255, 0.94);
+  --color-text-secondary: rgba(255, 255, 255, 0.68);
+  --color-text-tertiary: rgba(255, 255, 255, 0.42);
+  --color-text-placeholder: rgba(255, 255, 255, 0.48);
+  --color-accent: #60a5fa;
+  --color-accent-bg: rgba(59, 130, 246, 0.12);
+  --color-accent-border: rgba(59, 130, 246, 0.2);
+  --color-accent-glow: rgba(59, 130, 246, 0.08);
+  --color-success: #34d399;
+  --color-success-bg: rgba(52, 211, 153, 0.1);
+  --color-warning: #fbbf24;
+  --color-warning-bg: rgba(251, 191, 36, 0.1);
+  --color-danger: #f87171;
+  --color-danger-bg: rgba(248, 113, 113, 0.1);
+  --color-btn-primary-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(96, 165, 250, 0.2));
+  --color-btn-primary-bg-hover: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(96, 165, 250, 0.35));
+  --color-btn-primary-border: rgba(96, 165, 250, 0.25);
+  --color-btn-primary-text: #ffffff;
+  --color-btn-primary-glow: 0 0 20px rgba(59, 130, 246, 0.1);
+  --color-btn-primary-glow-hover: 0 0 30px rgba(59, 130, 246, 0.15), 0 0 60px rgba(59, 130, 246, 0.05);
+  --color-btn-ghost-bg: transparent;
+  --color-btn-ghost-bg-hover: rgba(255, 255, 255, 0.04);
+  --color-btn-ghost-border: rgba(255, 255, 255, 0.07);
+  --color-btn-ghost-text: rgba(255, 255, 255, 0.68);
+  --color-tab-active-bg: rgba(59, 130, 246, 0.12);
+  --color-tab-active-text: #ffffff;
+  --color-tab-active-glow: 0 0 10px rgba(59, 130, 246, 0.08);
+  --color-tab-inactive-text: rgba(255, 255, 255, 0.62);
+  --color-tab-container-bg: rgba(255, 255, 255, 0.03);
+  --color-nav-active-bg: rgba(59, 130, 246, 0.1);
+  --color-nav-active-border: rgba(59, 130, 246, 0.15);
+  --color-nav-active-text: #60a5fa;
+  --color-nav-hover-bg: rgba(255, 255, 255, 0.04);
+  --blur-panel: 0px;
+  --highlight-line: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  --highlight-line-hover: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --shadow-card: none;
+  --shadow-dropdown: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --glow-success: 0 0 6px rgba(52, 211, 153, 0.4);
+  --glow-warning: 0 0 6px rgba(251, 191, 36, 0.4);
+  --glow-danger: 0 0 6px rgba(248, 113, 113, 0.4);
+  --app-bg: var(--color-bg-base);
+  --works-page-bg: #222222;
+  --app-fg: var(--color-text-primary);
+  --app-muted: var(--color-text-secondary);
+  --app-accent: var(--color-accent);
+  --panel-bg: var(--color-bg-card);
+  --dropdown-panel-bg: #202020;
+  --prompt-asset-menu-bg: #262626;
+  --prompt-asset-menu-active-bg: #3c3c3c;
+  --date-range-panel-bg: var(--dropdown-panel-bg);
+  --panel-1: var(--color-bg-card);
+  --panel-2: var(--color-bg-elevated);
+  --panel-3: var(--color-bg-card-hover);
+  --border: var(--color-border);
+  --border-2: var(--color-border-active);
+  --canvas-task-param-bg: var(--canvas-controls-bg);
+  --canvas-task-param-border: var(--canvas-controls-border);
+  --canvas-task-param-divider: var(--canvas-controls-active);
+  --canvas-task-param-hover: var(--canvas-controls-hover);
+  --canvas-task-param-active: var(--canvas-controls-hover);
+  --canvas-task-param-option-selected: #525252;
+  --shadow: var(--shadow-dropdown);
+  --shadow-1: var(--shadow-card);
+  --shadow-2: var(--shadow-card);
+  --sidebar-bg: var(--color-bg-sidebar);
+  --sidebar-border: var(--color-border);
+  --input-bg: var(--color-bg-input);
+  --batch-generate-bg: #4b4d52;
+  --batch-generate-bg-hover: #585a60;
+  --batch-generate-border: #656870;
+  --batch-generate-fg: rgba(255, 255, 255, 0.92);
+  --overlay: rgba(0, 0, 0, 0.55);
+  --primary-bg: var(--color-accent);
+  --brand: var(--primary-bg);
+  --primary-hover: #3b82f6;
+  --primary-fg: #ffffff;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.08);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.15);
+  --scrollbar-thumb-active: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="dark"] .select-dropdown-panel,
+[data-theme="dark"] .parameter-popover-panel {
+  background: var(--dropdown-panel-bg) !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  border-color: var(--border) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.56);
+}
+
+[data-theme="dark"] .select-dropdown-panel::after,
+[data-theme="dark"] .parameter-popover-panel::after {
+  background: none !important;
+}
+
+html[data-theme="dark"][data-admin-dropdown-scope="true"] .app-dropdown-panel {
+  background: var(--dropdown-panel-bg) !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html[data-theme="dark"][data-admin-dropdown-scope="true"] .app-dropdown-panel::after {
+  background: none !important;
+}
+
+html.dark[data-theme="dark"],
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] body {
+  background: var(--color-bg-base);
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 2px;
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}

@@ -1,0 +1,338 @@
+{
+  "runId": "00000000-0000-4000-8000-000000000015",
+  "text": "请准备一套简约折纸海报，三个不同配色。总共只能生成三张，不要额外参考图。16:9或1:1都可以，2K，不要让我选模型。现在只展示完整生成方案，不要开始生成。",
+  "messageId": "00000000-0000-4000-8000-000000000016",
+  "calls": [
+    {
+      "id": "demo-id-8",
+      "name": "generation_plan",
+      "type": "toolCall",
+      "arguments": {
+        "task": "按要求准备演示构图，保持指定参数。",
+        "facts": [
+          {
+            "field": "intent",
+            "value": "prepare",
+            "source": {
+              "kind": "message",
+              "quote": "现在只展示完整生成方案，不要开始生成",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.modelChoice",
+            "value": {
+              "mode": "auto"
+            },
+            "source": {
+              "kind": "message",
+              "quote": "不要让我选模型",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.params.aspectRatio",
+            "value": "1:1",
+            "source": {
+              "kind": "message",
+              "quote": "16:9或1:1都可以",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "soft"
+          },
+          {
+            "field": "image.params.resolution",
+            "value": "2K",
+            "source": {
+              "kind": "message",
+              "quote": "2K",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.quantity",
+            "value": 3,
+            "source": {
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.finalOutputs",
+            "value": 3,
+            "source": {
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          }
+        ],
+        "steps": [
+          {
+            "id": "demo-id-9",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：蓝色背景，纸鹤居中，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          },
+          {
+            "id": "geo_poster_cool_ocean",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：橙色背景，纸鹤偏左，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          },
+          {
+            "id": "geo_poster_plum_mustard",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：绿色背景，纸鹤偏右，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          }
+        ],
+        "priorities": [
+          "quality",
+          "consistency"
+        ]
+      }
+    },
+    {
+      "id": "demo-id-10",
+      "name": "generation_plan",
+      "type": "toolCall",
+      "arguments": {
+        "task": "按要求准备演示构图，保持指定参数。",
+        "facts": [
+          {
+            "field": "intent",
+            "value": "prepare",
+            "source": {
+              "kind": "message",
+              "quote": "现在只展示完整生成方案，不要开始生成",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.params.aspectRatio",
+            "value": "1:1",
+            "source": {
+              "kind": "message",
+              "quote": "16:9或1:1都可以",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "soft"
+          },
+          {
+            "field": "image.params.resolution",
+            "value": "2K",
+            "source": {
+              "kind": "message",
+              "quote": "2K",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.quantity",
+            "value": 3,
+            "source": {
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.finalOutputs",
+            "value": 3,
+            "source": {
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          }
+        ],
+        "steps": [
+          {
+            "id": "demo-id-9",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：蓝色背景，纸鹤居中，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          },
+          {
+            "id": "geo_poster_cool_ocean",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：橙色背景，纸鹤偏左，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          },
+          {
+            "id": "geo_poster_plum_mustard",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：绿色背景，纸鹤偏右，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          }
+        ],
+        "priorities": [
+          "quality",
+          "consistency"
+        ]
+      }
+    },
+    {
+      "id": "demo-id-11",
+      "name": "generation_plan",
+      "type": "toolCall",
+      "arguments": {
+        "task": "按要求准备演示构图，保持指定参数。",
+        "facts": [
+          {
+            "field": "intent",
+            "value": "prepare",
+            "source": {
+              "kind": "message",
+              "quote": "现在只展示完整生成方案，不要开始生成",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.params.aspectRatio",
+            "value": "1:1",
+            "source": {
+              "kind": "message",
+              "quote": "16:9或1:1都可以",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "soft"
+          },
+          {
+            "field": "image.params.resolution",
+            "value": "2K",
+            "source": {
+              "kind": "message",
+              "quote": "2K",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.quantity",
+            "value": 3,
+            "source": {
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "sourceId": "00000000-0000-4000-8000-000000000016"
+            },
+            "strength": "hard"
+          }
+        ],
+        "steps": [
+          {
+            "id": "demo-id-9",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：蓝色背景，纸鹤居中，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          },
+          {
+            "id": "geo_poster_cool_ocean",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：橙色背景，纸鹤偏左，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          },
+          {
+            "id": "geo_poster_plum_mustard",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：绿色背景，纸鹤偏右，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          }
+        ],
+        "priorities": [
+          "quality",
+          "consistency"
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": "invalid_requirement_source",
+      "phase": "preflight",
+      "message": "facts[1] (image.modelChoice): 原文没有明确委托自动选择",
+      "dispatched": false
+    },
+    {
+      "code": "invalid_requirement_source",
+      "phase": "preflight",
+      "message": "facts[4] (generation.finalOutputs): 数量来源未明确授权该类产物或调用",
+      "dispatched": false
+    }
+  ]
+}

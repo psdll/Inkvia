@@ -1,0 +1,2 @@
+ALTER TABLE "MaterialAsset"
+ADD COLUMN IF NOT EXISTS "creatorName" TEXT;

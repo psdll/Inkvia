@@ -1,0 +1,20 @@
+.navigation {
+  --nav-muted: var(--app-muted);
+  --nav-label: var(--nav-muted);
+  --nav-accent: var(--primary-bg);
+}
+
+:global([data-theme="dark"]) .navigation {
+  --nav-muted: #969ca7;
+  --nav-label: #c0c5ce;
+  --nav-accent: #8aaff4;
+}
+
+:global(html:not(.dark)) .navigation a[aria-current="page"] {
+  background: #e4ebf7;
+  color: #3567c3;
+}
+
+:global(html:not(.dark)) .navigation a:not([aria-current="page"]):hover {
+  background: #e6e9ee;
+}

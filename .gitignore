@@ -1,0 +1,79 @@
+# ---- 依赖 ----
+/node_modules
+/.pnp
+.pnp.js
+
+# ---- Next.js 构建产物 ----
+/.next/
+/.next-*/
+/.next-dev/
+/.next-dev-*/
+/out/
+/build
+
+# ---- 环境变量（含真实密钥，切勿提交！）----
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+# 如需公开配置模板，请手动维护 .env.example（不含真实 key）
+
+# ---- 媒体 / 导入导出 / 发布包（本地存储，体积大，勿入库）----
+/public/uploads/
+/.imports/
+/.exports/
+/release/
+/output/
+/output-*.png
+code.tar.gz
+
+# ---- 日志 ----
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-server-*.log
+
+# ---- 测试 / 覆盖率 / Playwright ----
+/coverage
+/.playwright-cli/
+/test-results/
+/playwright-report/
+
+# ---- 编辑器 / 操作系统 ----
+.DS_Store
+Thumbs.db
+*.pem
+.vscode/
+.idea/
+
+# ---- 宠物动画的 hash 重复副本（与原帧 md5 相同、代码不引用，纯冗余 ~114M）----
+# 原帧命名用下划线(loading_01.png)，hash 副本带连字符(loading_01-<hash>.png)，故按连字符区分
+public/pet/frames/*/*-*.png
+
+# ---- TypeScript ----
+*.tsbuildinfo
+
+# ---- Python bytecode ----
+__pycache__/
+*.py[cod]
+
+# ---- Local verification and design-session caches ----
+.next-p0/
+/dist/prebuilt-release/
+/config/deploy/migration-runner/node_modules/
+/.worktrees/
+
+# Local resource policy and credential keys
+/config/local-runtime.json
+/config/test-runtime.json
+/.runtime-local/
+
+# Local migration checkpoint: temporary audit and build artifacts
+/.next-audit-*/
+/.next-perf-audit/
+/.next-settings-verify/
+/tmp/
+
+/dist-desktop/

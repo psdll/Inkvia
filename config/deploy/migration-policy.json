@@ -1,0 +1,767 @@
+{
+  "version": 5,
+  "mode": "safe",
+  "requiresMaintenanceWindow": false,
+  "allowDestructiveMigration": false,
+  "largeTableIndex": "independent_concurrent_only",
+  "requiresConcurrentIndex": true,
+  "largeTables": [
+    "Generation",
+    "AdminEvent",
+    "AdminWorkFeed",
+    "AnalyticsDailyByUser",
+    "AdminUserSummary",
+    "LiveVideoBatch"
+  ],
+  "onlineIndexDirectory": "config/deploy/online-indexes",
+  "approvedBackfills": [],
+  "approvedHistoricalRowWrites": [],
+  "migrations": [
+    {
+      "name": "20260519141024_init_postgresql",
+      "sha256": "40efea4b4ec0240880e8ab7efd2ae93d8e06c5226292a6fa69dd331316feb29c",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260519143158_add_generation_updated_at",
+      "sha256": "80fba9b6ea1d472a4952e75898d7903cb0767b49b3e65025baaa63ab7bdd7c74",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260520120000_add_agent_tables",
+      "sha256": "12ae92812f4118522cfc8a9d4c3a58175f65a89ec95fedf428bb0e6dba19adc7",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260520130000_agent_message_metadata_jsonb",
+      "sha256": "461d91c896c0dbd47e3cce07b510e7387cbfb8a840cbc0137686691100124985",
+      "class": "contract",
+      "execution": "manual",
+      "historicalRowWrites": true,
+      "oldCodeCompatible": false
+    },
+    {
+      "name": "20260525181000_add_usage_ledger",
+      "sha256": "70f487cec14d28664d7b3b3e4bbc4d89b1a25cebd038ba15154da911a3282b59",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260525192000_add_billing_rule_conditions",
+      "sha256": "d37e706219a5bde614de5af580fb7bbd182d3d4360764673e411fdf7b23ff64f",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260527000000_admin_perf_indexes_and_rollup",
+      "sha256": "2b27858f4776e82da45eac8125df85db14544eb755eb9a9b5d67b24d68b0c5e2",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260528123000_add_media_library_usage_tracking",
+      "sha256": "5265b4f9bbbb02be6b197987d1f65c2f7befd6eea662bf3922a187f82e4c41c9",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260528143000_split_material_assets",
+      "sha256": "f359aa89cea486ef584ffeec6fe4b271fb9d4b866a4f2871258764aac6ea3cc7",
+      "class": "contract",
+      "execution": "manual",
+      "historicalRowWrites": true,
+      "oldCodeCompatible": false
+    },
+    {
+      "name": "20260530020000_add_cfcontent_authuserid_index",
+      "sha256": "5c40c0f5c3e21ce2c2e1676f559186033f841a4c50d28717f043193b3da97477",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260530030000_admin_realtime_works_indexes",
+      "sha256": "99ad6fa437aef0ebb9c64d5462c4f0cdf00b705c0afd4176667a3bdd5d25d1f3",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260530043000_add_material_asset_selection_events",
+      "sha256": "41d2737a14722794886d79b2338c6c8b189cce5b9614b0276e6e8b6744cbe692",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260530120000_add_user_export_job",
+      "sha256": "6aa3f884836967e152858b837488a00c829a6b8187651be725b95559dbe35713",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260530143000_add_user_import_job",
+      "sha256": "efbb119db894ec68c569fafbac09d981e8a9f6081287201ebc530cd06d8b4b1b",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260608000000_add_material_asset_creator_name",
+      "sha256": "807ef45459aa6b23a7e9078a829279551faa75b0fdf4a7ea56295048e96bf75b",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260612090000_add_material_asset_group_media",
+      "sha256": "3fde201a0761858681a8c46d2e6d8fa7684084abc2902520e2bdcf608a75d224",
+      "class": "expand",
+      "execution": "manual",
+      "historicalRowWrites": true,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260618123849_add_canvas",
+      "sha256": "31eda936d24042c89992a64551424de1b34d8a574cc2f2293e2dd9e1e5c7ddcd",
+      "class": "contract",
+      "execution": "manual",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": false
+    },
+    {
+      "name": "20260630112731_add_material_asset_inspiration",
+      "sha256": "a74b8b6abf33cce4cff6083bb413d5b18ad39b91954df29fb123638a6be909f1",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260702000000_admin_works_created_at_indexes",
+      "sha256": "6a058df5862d29abf1c4eba5e71137369f09a5fc01de3f377038acd32148f5b3",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260702010000_admin_asset_feed",
+      "sha256": "ec13ec524806e0068629fc554af3725fd44f19eb66807cbd4e39b6d8888cf25f",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260703093000_add_virtual_avatars",
+      "sha256": "592a6fe3d346c0159b5124a33ade8403be3fd5dba21b7025a45f216433faa3a6",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260707090000_system_update_records",
+      "sha256": "ee15e3ac1aaf48b72ee3795d6ae477b32e119a09fccb06cb4e560ec56106f9e5",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260708090000_admin_operational_read_models",
+      "sha256": "6a6e7801bf2ee620d32d74772d8f33ce4710885f8038087a640c64d4670ce290",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260709090000_prompt_reverse_tasks",
+      "sha256": "fb018493f926cb109126aded589982e8a9419809ff855601a49d78e5dc125463",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260710090000_llm_feature_routing",
+      "sha256": "9d041f3aa9a1625a9eab262525177de919f296ec63a0cc809ded919cac2365f3",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260713090000_remove_legacy_canvas_data",
+      "sha256": "42ec5df2748e8d4b2fd368b7b15918e9f8b6097362abef2ff61144324fc270ea",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260713130000_canvas_v2_foundation",
+      "sha256": "3ab25b5dd1f1199222a210c5be567c469ec8b6b021ec2d6fe0fa1ce5c9584658",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260715000000_add_material_asset_model_name",
+      "sha256": "ffb4ee7397314050e9fbcb92ea714691cf25564f15cf06f2f8968523e70f0c46",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260715010000_add_material_asset_options",
+      "sha256": "21c89914234182b114938b3e07922924416a8f5d9deea105b93144d473caa243",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260715011000_normalize_material_asset_option_values",
+      "sha256": "7c760af3a6f37faba0f6b06acfe8dbbbaceaaf62c45f541eeea4aa3691045e04",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260716090000_reliable_admin_work_feed",
+      "sha256": "3f5884f1ddf9b290e0e515c47f24890a0c5494d20ef2c5ff4e3624ca9c86bb67",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260716140000_incremental_admin_user_summaries",
+      "sha256": "f8c50032da7023748ac3fb6eba64c01119e461552046f0dbc4fb45d68b61f9fc",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260716150000_admin_user_summary_tombstones",
+      "sha256": "03e4c02a7264b3ab71b50678d2254eb3e427db0e4ead58612f0999563ff6f6ed",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260717143000_canvas_default_untitled_project",
+      "sha256": "417a44a13f20491c97c52e25b1c851ae01c9524a495a5d0b156a5cf25968839c",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260717154500_add_import_retention_anchor",
+      "sha256": "fe914c31a67a3bf9438a98c66d1ddbff18c3cd14d85cf065aecaea5af3f68908",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260720000000_system_update_v21_audit",
+      "sha256": "b2aca8da9ce651619c58359c61299dff1ab83e810870614b60dd75da92b92be1",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260720190000_canvas_mutation_projection_foundation",
+      "sha256": "1049324e2498d845341fee445a6b335ce08ce1a956f67eb28979acaa07da5d81",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260720210000_canvas_media_lifecycle",
+      "sha256": "4e9e7e6cbbe18bcee3db3db26859b4ae41b1eca28006ea862ec542208ac14c94",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260720220000_canvas_run_step_queue",
+      "sha256": "61f48d903d41d4105ea0da119429de2439c73dd82f3a79bb129ec1b4a169eb0d",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260724130000_tool_input_media_lifecycle",
+      "sha256": "a20e4e120d9f28f15a694c1916b1a31eb07e04d562da900294c73974343100c6",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260727190000_canvas_undo_media_holds",
+      "sha256": "d763a19de1fe6777cbceeb6e0de16b4c767fa345f8f3a1d676818ae9a6e9aab3",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260728150000_image_batch_workbench",
+      "sha256": "852968ccd663da32e36dfbd14fd5031f09aa75d5b2186dd42a68f5f540f528a3",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260728204500_image_batch_submission_key",
+      "sha256": "f0c04ae1b38587f61093dd06f094477f195883b232719a1e03e3710494266165",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260729093000_add_material_asset_option_tombstones",
+      "sha256": "93184871e9b65ddafc5ad40f7df320bed9b4f902bc1f30db7c612cf1a9a6e16f",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260729100000_image_batch_task_groups",
+      "sha256": "b7862bff854115f13de5fa2cce51a78b0623ad2275fe7b6cebbd5fc2fee9a5db",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260729143000_image_batch_group_history",
+      "sha256": "3e1be249361b52d931ba680328ab664bebea63ce2dd5ecf943f9e974ad2decf6",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260730113000_unified_prompt_presets",
+      "sha256": "f1ddda039058367c41428caf0b18c9902451d648a1295c85f133dd3957396fe8",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260730183000_canvas_trash_retention",
+      "sha256": "be3a2998e7ad71b5876e2e5d7887b3c059954e03f90905eb0ccfb104e9ace2b7",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260804130000_account_role_positioning_drafts",
+      "sha256": "418ed8beecb333d5e5fc9fb32df1e594fb0e4a55f9164a28c4168ca7ce44296c",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260805170000_add_unified_role_skills",
+      "sha256": "6ce903415182037744b05591a90b64973de34a4632ef62696f01fd51b1f0ad20",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260806143000_add_system_role_skill_media_type",
+      "sha256": "ddad2fecb66a40bd929df8776f853c0173c2c1f302c4e08cc1d216a0bb609178",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260806170000_add_user_role_skill_media_type",
+      "sha256": "5b7019f37e9b37c20dadb7de02502ba5c2e9256a99cf2fec986d1f28c146fb31",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260807120000_add_material_asset_listed_at",
+      "sha256": "8afda9be41bb39d1b2a25acc3640a4a2058291d29bb73edb870f8eeb276fee7a",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260810120000_tool_workspace_drafts",
+      "sha256": "1e25671f811341d791ea2ef1d82de65d2a637edcdc85964cfff863758d273124",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260811110000_role_positioning_continuations",
+      "sha256": "8af79ac58b636fd0762f7a1cd4d6d9993ce33207c6785cced2e98b32a228eea1",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260811150000_add_live_video_batches",
+      "sha256": "b33d4bc8f8686ecb3e97c3e5b6ca0e23f61cd88a4c7ba1db846483b60f696790",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260811205000_live_video_item_optional_media",
+      "sha256": "d5213383b6b5f590868cc5a9a1e563a315e2711d66497c34ef1220a1cca00a67",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260818190000_add_monitoring_alert_records",
+      "sha256": "ae08663dcb9661e0b7b88839b43d9d2e7d2f6ce248ac5702a5430266e6683914",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260819180000_allow_batch_workspace_media_references",
+      "sha256": "90a3ea1c828c3db84595818d4907a9dbd62f378b2e7946d9c46e1b43fab95b72",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260830190000_agent_v2_runtime",
+      "sha256": "fe26ae4428382da3dbc03f621aae978a63ff9b58aaebd64206f2eb81a3bb1348",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260830200000_agent_memory_profile",
+      "sha256": "c8cb7593152bdaa90c9513c46a26b440d0644768b1fc7b99e54ada5deb57bcad",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260903123000_canvas_public_id",
+      "sha256": "8c6af39965d793143df53a858cd7700648a523ec56724a2c048405e8288e616a",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260904160000_canvas_voice_favorites",
+      "sha256": "b88c7bf5eed3188f9cb9a04358a6dc3e81e0186e63f6539565cf10031c98a552",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260906120000_p0_credentials_and_approval",
+      "sha256": "14ebb20758fdcbe3f26c180c3bb3dde4f8b9ffc8394e8d987ccff480f703b19f",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260906160000_agent_p1_runtime",
+      "sha256": "8ac89c4e9cc371738a5f8290ed718885b78d196edc1db69e7ada09759555c3b2",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260910090000_canvas_asset_history",
+      "sha256": "857c5fa1dfd828a76d42985a3a0c0417b787bc46ccc74364fb1f710b1898bdf3",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260928140000_template_custom_category",
+      "sha256": "8d93ea687b83ac65f0331c909cb33e833b4e1c20650a4e59cdc43bac6ac5985b",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260928153000_material_live_revision",
+      "sha256": "7a8bd1f2fa6953f522e3876d9a5fc6439358d77897348c3b4ea6f8c0ac8b87ed",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20260928203000_settings_material_creator_lookup",
+      "sha256": "77fdc1ce07d7f3c1f7f3a252eeeb14019463c209177a1a24b731e5d3a0a65bdd",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20261013150000_creative_agent_runtime",
+      "sha256": "c7f77d3bb6b675ddddc124c2ecd8cfb5e425460efe8372667fa64deba0974df2",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20261013151000_creative_agent_decision_binding",
+      "sha256": "f8d8461161f7b62ac3bf19951a4840b6f72434124297d30683d456a6593551fe",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20261013153000_creative_agent_scope_relations",
+      "sha256": "b0b70fb125be89242d505ef5744415d086131048623124975b49d6fd3ee9e63d",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20261014140000_creative_agent_question_fields",
+      "sha256": "807901338b1c91460f6f2fa29cb9f5ebd102b46078d20da47ed7833efe172ca8",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    },
+    {
+      "name": "20261014160000_creative_agent_debug_trace",
+      "sha256": "f7c0845f24a62a297b6c408007c2fe66a07f89c33f464c730eea8902b79f7332",
+      "class": "expand",
+      "execution": "automatic",
+      "historicalRowWrites": false,
+      "oldCodeCompatible": true
+    }
+  ],
+  "approvedOnlineIndexes": [
+    {
+      "file": "live-video-batch-history.sql",
+      "table": "LiveVideoBatch",
+      "index": "LiveVideoBatch_active_history_idx",
+      "sha256": "75ad03a19fe98f364889de328d67b32d1543944351e04246f50b76c86a4d0be2",
+      "databaseDefinition": "CREATE INDEX \"LiveVideoBatch_active_history_idx\" ON public.\"LiveVideoBatch\" USING btree (\"authUserId\", \"createdAt\" DESC, id DESC) WHERE (\"deletedAt\" IS NULL)"
+    },
+    {
+      "file": "generation-local-path.sql",
+      "table": "Generation",
+      "index": "Generation_localPath_idx",
+      "sha256": "908e290ba7103a7d3299194631c1cfe2ccd595d547cfce473b39cc8a1a703ee5",
+      "databaseDefinition": "CREATE INDEX \"Generation_localPath_idx\" ON public.\"Generation\" USING btree (\"localPath\")"
+    },
+    {
+      "file": "admin-user-summary-active-last-active.sql",
+      "table": "AdminUserSummary",
+      "index": "AdminUserSummary_active_lastActiveAt_adminKey_idx",
+      "sha256": "75c8940a53461b6f2e2aaf1a552d766125945cba75840f9846fe48a94755baef",
+      "databaseDefinition": "CREATE INDEX \"AdminUserSummary_active_lastActiveAt_adminKey_idx\" ON public.\"AdminUserSummary\" USING btree (\"lastActiveAt\" DESC NULLS LAST, \"adminKey\") WHERE (\"deletedAt\" IS NULL)"
+    },
+    {
+      "file": "admin-work-feed-auth-source-event.sql",
+      "table": "AdminWorkFeed",
+      "index": "AdminWorkFeed_authUserId_sourceEventId_active_idx",
+      "sha256": "9bad8d0fa467ab23c7cd128c7e9b876e32523c22931945a28c528b712672cc7e",
+      "databaseDefinition": "CREATE INDEX \"AdminWorkFeed_authUserId_sourceEventId_active_idx\" ON public.\"AdminWorkFeed\" USING btree (\"authUserId\", \"sourceEventId\" DESC) WHERE ((\"deletedAt\" IS NULL) AND (\"authUserId\" IS NOT NULL))"
+    },
+    {
+      "file": "admin-work-feed-user-source-event.sql",
+      "table": "AdminWorkFeed",
+      "index": "AdminWorkFeed_userId_sourceEventId_active_idx",
+      "sha256": "cb2898b7c18fb14304e87123952e17d0941c175c8669883ff40b32b4a21d82b0",
+      "databaseDefinition": "CREATE INDEX \"AdminWorkFeed_userId_sourceEventId_active_idx\" ON public.\"AdminWorkFeed\" USING btree (\"userId\", \"sourceEventId\" DESC) WHERE ((\"deletedAt\" IS NULL) AND (\"authUserId\" IS NULL))"
+    },
+    {
+      "file": "admin-work-feed-user-auth-identity.sql",
+      "table": "AdminWorkFeed",
+      "index": "AdminWorkFeed_userId_authUserId_identity_idx",
+      "sha256": "0d907b3587846d6a677cc846c3755dd421e397b2055293a001fdb0777e6ff44e",
+      "databaseDefinition": "CREATE INDEX \"AdminWorkFeed_userId_authUserId_identity_idx\" ON public.\"AdminWorkFeed\" USING btree (\"userId\", \"authUserId\") WHERE ((\"deletedAt\" IS NULL) AND (\"authUserId\" IS NOT NULL))"
+    },
+    {
+      "file": "admin-work-feed-auth-source-event-generated.sql",
+      "table": "AdminWorkFeed",
+      "index": "AdminWorkFeed_authUserId_sourceEventId_generated_active_idx",
+      "sha256": "20611c4d6abd4a89a22ed2575f4841cfdb10a8d4243a28ae389beaab048a0255",
+      "databaseDefinition": "CREATE INDEX \"AdminWorkFeed_authUserId_sourceEventId_generated_active_idx\" ON public.\"AdminWorkFeed\" USING btree (\"authUserId\", \"sourceEventId\" DESC, \"generationId\") WHERE ((\"deletedAt\" IS NULL) AND (\"authUserId\" IS NOT NULL) AND (type <> 'import'::text))"
+    },
+    {
+      "file": "admin-work-feed-user-source-event-generated.sql",
+      "table": "AdminWorkFeed",
+      "index": "AdminWorkFeed_userId_sourceEventId_generated_active_idx",
+      "sha256": "1fff555f0ca04feb9481d7f1f4c27b3eb4fe2d8b78191f1a227008cf2f5de863",
+      "databaseDefinition": "CREATE INDEX \"AdminWorkFeed_userId_sourceEventId_generated_active_idx\" ON public.\"AdminWorkFeed\" USING btree (\"userId\", \"sourceEventId\" DESC, \"generationId\") WHERE ((\"deletedAt\" IS NULL) AND (\"authUserId\" IS NULL) AND (type <> 'import'::text))"
+    },
+    {
+      "file": "admin-work-feed-user-created-generated.sql",
+      "table": "AdminWorkFeed",
+      "index": "AdminWorkFeed_userId_createdAt_generated_active_idx",
+      "sha256": "4aff5b79d160f6388441a921be21ed66fc98579c37fce1be73dc0e484fcd0261",
+      "databaseDefinition": "CREATE INDEX \"AdminWorkFeed_userId_createdAt_generated_active_idx\" ON public.\"AdminWorkFeed\" USING btree (\"userId\", \"createdAt\" DESC, \"generationId\" DESC) WHERE ((\"deletedAt\" IS NULL) AND (\"authUserId\" IS NULL) AND (type <> 'import'::text))"
+    },
+    {
+      "file": "admin-event-status-available.sql",
+      "table": "AdminEvent",
+      "index": "AdminEvent_status_availableAt_id_idx",
+      "sha256": "1ce7bb67cca12940e163e582cae717e258ae1a656c4bf9e52413100c4bbbc521",
+      "databaseDefinition": "CREATE INDEX \"AdminEvent_status_availableAt_id_idx\" ON public.\"AdminEvent\" USING btree (status, \"availableAt\", id)"
+    },
+    {
+      "file": "admin-event-status-locked.sql",
+      "table": "AdminEvent",
+      "index": "AdminEvent_status_lockedAt_idx",
+      "sha256": "b5fd1130cc42e435645b68dc4cb337683f8d693fe42ad98ddff93bca24a2af52",
+      "databaseDefinition": "CREATE INDEX \"AdminEvent_status_lockedAt_idx\" ON public.\"AdminEvent\" USING btree (status, \"lockedAt\")"
+    },
+    {
+      "file": "admin-event-unfinished-id.sql",
+      "table": "AdminEvent",
+      "index": "AdminEvent_unfinished_id_idx",
+      "sha256": "d0795f8cfae750910cd4c515742b825f4afeaa627261b14005bc410d8a068269",
+      "databaseDefinition": "CREATE INDEX \"AdminEvent_unfinished_id_idx\" ON public.\"AdminEvent\" USING btree (id) WHERE (status <> 'done'::text)"
+    },
+    {
+      "file": "admin-work-feed-source-event.sql",
+      "table": "AdminWorkFeed",
+      "index": "AdminWorkFeed_sourceEventId_idx",
+      "sha256": "e83d03a851b209893322fdbccbc501d79826d930533628ab90c0bf4b9bdbd97f",
+      "databaseDefinition": "CREATE INDEX \"AdminWorkFeed_sourceEventId_idx\" ON public.\"AdminWorkFeed\" USING btree (\"sourceEventId\")"
+    },
+    {
+      "file": "admin-user-summary-updated-at-admin-key.sql",
+      "table": "AdminUserSummary",
+      "index": "AdminUserSummary_updatedAt_adminKey_idx",
+      "sha256": "fc9f704bc212acad405aaf8020f098731664c8c2db2f08156b95a0a5cc756fb6",
+      "databaseDefinition": "CREATE INDEX \"AdminUserSummary_updatedAt_adminKey_idx\" ON public.\"AdminUserSummary\" USING btree (\"updatedAt\", \"adminKey\")"
+    },
+    {
+      "file": "analytics-daily-by-user-user-day.sql",
+      "table": "AnalyticsDailyByUser",
+      "index": "AnalyticsDailyByUser_userId_day_idx",
+      "sha256": "fa4d6c09facd5f443506d6aafe3cb4c4669e25afd325e8df5a4aeff761cc368b",
+      "databaseDefinition": "CREATE INDEX \"AnalyticsDailyByUser_userId_day_idx\" ON public.\"AnalyticsDailyByUser\" USING btree (\"userId\", day)"
+    },
+    {
+      "file": "admin-user-summary-deleted-last-active.sql",
+      "table": "AdminUserSummary",
+      "index": "AdminUserSummary_deletedAt_lastActiveAt_idx",
+      "sha256": "4015538e642d70f96f0796c0d32b2402b28a9d8f1f7bfef70721fdc1d95079e3",
+      "databaseDefinition": "CREATE INDEX \"AdminUserSummary_deletedAt_lastActiveAt_idx\" ON public.\"AdminUserSummary\" USING btree (\"deletedAt\", \"lastActiveAt\")"
+    },
+    {
+      "file": "generation-request-key.sql",
+      "table": "Generation",
+      "index": "Generation_requestKey_key",
+      "sha256": "448a00c95b07cf96dbd479fbe7e317c05034227dac2704097d001100e9f09039",
+      "databaseDefinition": "CREATE UNIQUE INDEX \"Generation_requestKey_key\" ON public.\"Generation\" USING btree (\"requestKey\") WHERE (\"requestKey\" IS NOT NULL)"
+    },
+    {
+      "file": "canvas-history-all.sql",
+      "table": "Generation",
+      "index": "Generation_canvas_history_all_idx",
+      "sha256": "f0ea1f1e8b59e95d1acb93e8c7d3b6a64f4bc779c2f0e671fe6a34b03e31333b",
+      "databaseDefinition": "CREATE INDEX \"Generation_canvas_history_all_idx\" ON public.\"Generation\" USING btree (\"authUserId\", source, status, \"createdAt\", id)"
+    },
+    {
+      "file": "canvas-history-current.sql",
+      "table": "Generation",
+      "index": "Generation_canvas_history_current_idx",
+      "sha256": "50eed91e67aeb8123578b56f7d065af3c563d3fd8cae3832f3c82463270bcbf3",
+      "databaseDefinition": "CREATE INDEX \"Generation_canvas_history_current_idx\" ON public.\"Generation\" USING btree (\"authUserId\", \"canvasId\", status, \"createdAt\", id)"
+    }
+  ],
+  "approvedSchemaMigrations": [
+    {
+      "name": "20260716090000_reliable_admin_work_feed",
+      "sha256": "3f5884f1ddf9b290e0e515c47f24890a0c5494d20ef2c5ff4e3624ca9c86bb67"
+    },
+    {
+      "name": "20260716140000_incremental_admin_user_summaries",
+      "sha256": "f8c50032da7023748ac3fb6eba64c01119e461552046f0dbc4fb45d68b61f9fc"
+    },
+    {
+      "name": "20260720000000_system_update_v21_audit",
+      "sha256": "b2aca8da9ce651619c58359c61299dff1ab83e810870614b60dd75da92b92be1"
+    },
+    {
+      "name": "20260819180000_allow_batch_workspace_media_references",
+      "sha256": "90a3ea1c828c3db84595818d4907a9dbd62f378b2e7946d9c46e1b43fab95b72"
+    }
+  ],
+  "notes": "Only additive migrations are allowed for normal one-click updates."
+}

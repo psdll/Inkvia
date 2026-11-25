@@ -1,0 +1,29 @@
+# 开发环境专用 PostgreSQL —— 与生产(版本7.2\inkvia 的 5433 容器)完全分家。
+# 独立的 compose 项目名 / 容器名 / 端口(5434) / 数据卷,生命周期互不影响。
+# 仅监听 127.0.0.1，不对外网暴露。
+name: inkvia_dev
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: inkvia_pg_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app_local_pw_2026
+      POSTGRES_DB: inkvia
+      TZ: Asia/Shanghai
+    # 生产用 5433，开发避开它用 5434
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d inkvia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata_dev:
+    name: inkvia_dev_pgdata

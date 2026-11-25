@@ -1,0 +1,25 @@
+.root { position: relative; }
+.panel { position: absolute; bottom: calc(100% + 12px); left: 0; z-index: 60; width: 280px; max-width: calc(100vw - 32px); max-height: calc(100dvh - 96px); overflow-y: auto; padding: 8px; background: var(--panel-bg); color: var(--app-fg); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 16px 48px #00000026; outline: none; }
+.identity { display: flex; align-items: center; gap: 12px; padding: 16px 12px 20px; }
+.loginIdentity { width: 100%; text-align: left; border-radius: 10px; }
+.loginIdentity .name, .loginIdentity .hint { display: block; }
+.loginIdentity:hover:not(:disabled) { background: var(--panel-2); }
+.loginIdentity:focus-visible { outline: 2px solid var(--primary-bg); outline-offset: -2px; }
+.loginIdentity:disabled { opacity: .5; cursor: wait; }
+.avatar { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border: 1px solid var(--border); border-radius: 12px; background: var(--panel-2); font-size: 18px; font-weight: 600; }
+.account { min-width: 0; }
+.name { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.uid, .hint { margin-top: 4px; color: var(--app-muted); font-size: 12px; }
+.uid:hover { color: var(--app-fg); }
+.links { padding: 6px 0; border-top: 1px solid var(--border); }
+.item { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 43px; padding: 11px 12px; border-radius: 9px; text-align: left; font-size: 14px; color: var(--app-fg); }
+.item > svg { flex-shrink: 0; color: var(--app-muted); }
+.item:hover { background: var(--panel-2); }
+.item:focus-visible, .uid:focus-visible { outline: 2px solid var(--primary-bg); outline-offset: -2px; }
+.arrow { margin-left: auto; opacity: .65; }
+.session { margin-top: 5px; padding-top: 7px; border-top: 1px solid var(--border); }
+.logout, .logout > svg, .error { color: #d85c65; }
+.item:disabled { opacity: .5; cursor: wait; }
+.error { font-size: 12px; padding: 8px 12px; }
+.toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 9px; padding: 14px 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel-bg); color: var(--app-fg); box-shadow: 0 6px 24px #00000014; font-size: 14px; white-space: nowrap; pointer-events: none; }
+.toast svg { color: #60b347; }

@@ -1,0 +1,53 @@
+.mark { flex: none; overflow: visible; }
+.base { transition: opacity .3s ease; }
+.flow, .trail, .glint { opacity: 0; }
+.flow, .trail { stroke-dasharray: 42 100; stroke-dashoffset: 42; }
+.glint { stroke-dasharray: 16 120; stroke-dashoffset: 16; }
+.drop { transform-box: fill-box; transform-origin: 50% 100%; }
+
+/* 空闲：轮廓完整，每 6 秒一道高光沿笔画掠过，圆点随之轻压 */
+.mark[data-state="idle"] .glint { animation: glint 6s cubic-bezier(.45, 0, .25, 1) infinite; }
+.mark[data-state="idle"] .drop { animation: idleDrop 6s cubic-bezier(.65, 0, .35, 1) infinite; }
+
+/* 运行：底色收暗作轨道，一段亮色沿轨道连续流动并带拖尾 */
+.mark[data-state="thinking"] .base { opacity: .32; }
+.mark[data-state="thinking"] .flow { opacity: 1; animation: flow 1.6s cubic-bezier(.55, 0, .45, 1) infinite; }
+.mark[data-state="thinking"] .trail { opacity: .4; animation: flow 1.6s cubic-bezier(.55, 0, .45, 1) infinite; animation-delay: -1.45s; }
+.mark[data-state="thinking"] .drop { animation: drop 1.6s cubic-bezier(.65, 0, .35, 1) infinite; }
+
+.mark[data-state="done"] .drop { animation: done .5s cubic-bezier(.34, 1.56, .64, 1); }
+
+@keyframes flow {
+  from { stroke-dashoffset: 42; }
+  to { stroke-dashoffset: -100; }
+}
+@keyframes glint {
+  0%, 68% { stroke-dashoffset: 16; opacity: 0; }
+  70% { opacity: .75; }
+  90% { opacity: .75; }
+  93%, 100% { stroke-dashoffset: -100; opacity: 0; }
+}
+@keyframes drop {
+  0% { transform: none; }
+  14% { transform: translateY(2.5px) scale(1.12, .84); }
+  30% { transform: translateY(-1px) scale(.95, 1.06); }
+  45%, 100% { transform: none; }
+}
+@keyframes idleDrop {
+  0%, 64% { transform: none; }
+  68% { transform: translateY(2.5px) scale(1.12, .84); }
+  72% { transform: translateY(-1px) scale(.95, 1.06); }
+  76%, 100% { transform: none; }
+}
+@keyframes done {
+  from { transform: scale(.6); }
+  to { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mark[data-state] .flow,
+  .mark[data-state] .trail,
+  .mark[data-state] .glint,
+  .mark[data-state] .drop { animation: none; opacity: 0; transform: none; }
+  .mark[data-state] .drop { opacity: 1; }
+  .mark[data-state] .base { opacity: 1; }
+}

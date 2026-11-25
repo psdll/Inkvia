@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "mode": "smart",
+  "nodes": [
+    {
+      "id": "prompt-1",
+      "type": "prompt",
+      "position": { "x": 10, "y": 20 },
+      "data": { "kind": "prompt", "text": "golden" }
+    }
+  ],
+  "edges": [],
+  "viewport": { "x": 0, "y": 0, "zoom": 1 },
+  "settings": { "snapToGrid": false, "gridSize": 20 }
+}

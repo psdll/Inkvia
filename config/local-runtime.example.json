@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "profile": "local",
+  "projectRoot": "C:/path/to/inkvia_dev",
+  "database": {
+    "endpointId": "127.0.0.1:55432",
+    "databaseName": "inkvia_dev",
+    "roleName": "inkvia_dev",
+    "instanceId": "REPLACE_WITH_PROVISIONED_INSTANCE_ID"
+  },
+  "writableRoots": [
+    "C:/path/to/inkvia_dev/public/uploads",
+    "C:/path/to/inkvia_dev/.imports",
+    "C:/path/to/inkvia_dev/.exports"
+  ],
+  "networkMode": "business",
+  "allowedTestOrigins": []
+}

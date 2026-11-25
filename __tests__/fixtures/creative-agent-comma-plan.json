@@ -1,0 +1,107 @@
+{
+  "text": "生成两张简约折纸海报：一张米色，一张灰蓝色，各用一个圆形构图，不要文字。都是1:1、2K，不要参考图或试版，模型智能匹配。",
+  "plan": {
+    "task": "按要求准备演示构图，保持指定参数。",
+    "facts": [
+      {
+        "field": "intent",
+        "value": "generate",
+        "source": {
+          "kind": "message",
+          "quote": "生成两张简约折纸海报",
+          "sourceId": "00000000-0000-4000-8000-000000000010"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.quantity",
+        "value": 1,
+        "source": {
+          "kind": "message",
+          "quote": "一张米色",
+          "sourceId": "00000000-0000-4000-8000-000000000010"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.quantity",
+        "value": 1,
+        "source": {
+          "kind": "message",
+          "quote": "一张灰蓝色",
+          "sourceId": "00000000-0000-4000-8000-000000000010"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.params.aspectRatio",
+        "value": "1:1",
+        "source": {
+          "kind": "message",
+          "quote": "都是1:1",
+          "sourceId": "00000000-0000-4000-8000-000000000010"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.params.resolution",
+        "value": "2K",
+        "source": {
+          "kind": "message",
+          "quote": "2K",
+          "sourceId": "00000000-0000-4000-8000-000000000010"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.modelChoice",
+        "value": {
+          "mode": "auto"
+        },
+        "source": {
+          "kind": "message",
+          "quote": "模型智能匹配",
+          "sourceId": "00000000-0000-4000-8000-000000000010"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "generation.intermediateOutputs",
+        "value": 0,
+        "source": {
+          "kind": "message",
+          "quote": "不要参考图或试版",
+          "sourceId": "00000000-0000-4000-8000-000000000010"
+        },
+        "strength": "hard"
+      }
+    ],
+    "steps": [
+      {
+        "id": "poster_beige_circle",
+        "role": "final",
+        "params": {
+          "count": 1,
+          "resolution": "2K",
+          "aspectRatio": "1:1"
+        },
+        "prompt": "折纸海报示例：蓝色背景，纸鹤居中，无文字。",
+        "mediaType": "image"
+      },
+      {
+        "id": "poster_bluegrey_circle",
+        "role": "final",
+        "params": {
+          "count": 1,
+          "resolution": "2K",
+          "aspectRatio": "1:1"
+        },
+        "prompt": "折纸海报示例：橙色背景，纸鹤偏左，无文字。",
+        "mediaType": "image"
+      }
+    ],
+    "priorities": [
+      "quality"
+    ]
+  }
+}

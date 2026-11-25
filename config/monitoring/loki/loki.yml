@@ -1,0 +1,58 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /loki
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
+
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+compactor:
+  working_directory: /loki/compactor
+  compaction_interval: 10m
+  apply_retention_interval: 1h
+  retention_enabled: true
+  retention_delete_delay: 2h
+  retention_delete_worker_count: 50
+  delete_request_store: filesystem
+  delete_request_cancel_period: 24h
+
+limits_config:
+  retention_period: 360h
+  retention_stream:
+    - selector: '{log_class="error"}'
+      priority: 2
+      period: 720h
+    - selector: '{log_class="audit"}'
+      priority: 3
+      period: 4320h
+  deletion_mode: filter-and-delete
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+  max_query_length: 744h
+  max_query_lookback: 4320h
+  max_entries_limit_per_query: 5000
+  query_timeout: 1m
+  volume_enabled: true
+
+analytics:
+  reporting_enabled: false

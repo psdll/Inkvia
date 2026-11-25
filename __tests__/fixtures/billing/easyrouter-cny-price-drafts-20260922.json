@@ -1,0 +1,103 @@
+{
+  "format": "inkvia-price-drafts-v1",
+  "drafts": [
+    {
+      "id": "a82508dadfd187e80340f47f399bf01823d96f0d17d412130f8bfd889243f401",
+      "provider": "easyrouter",
+      "model": "gpt-5.5",
+      "module": "agent",
+      "label": "gpt-5.5",
+      "currency": "CNY",
+      "notes": "来源：用户提供的 EasyRouter 模型价格截图，2026-09-22；1美元=200积分，1美元=7元人民币，即1积分=0.035元。截图美元单价直接乘7，未重复除以200。GPT-5.5按输入272000 token分档，阈值本身属于低档。未提供缓存写入价格，留空待补；未设置生效日。",
+      "rows": [
+        {
+          "conditions": {
+            "inputBand": "over_272000"
+          },
+          "unitType": "cache_creation_million_token",
+          "price": ""
+        },
+        {
+          "conditions": {
+            "inputBand": "up_to_272000"
+          },
+          "unitType": "cache_creation_million_token",
+          "price": ""
+        },
+        {
+          "conditions": {
+            "inputBand": "over_272000"
+          },
+          "unitType": "cached_million_token",
+          "price": "7"
+        },
+        {
+          "conditions": {
+            "inputBand": "up_to_272000"
+          },
+          "unitType": "cached_million_token",
+          "price": "3.5"
+        },
+        {
+          "conditions": {
+            "inputBand": "over_272000"
+          },
+          "unitType": "input_million_token",
+          "price": "70"
+        },
+        {
+          "conditions": {
+            "inputBand": "up_to_272000"
+          },
+          "unitType": "input_million_token",
+          "price": "35"
+        },
+        {
+          "conditions": {
+            "inputBand": "over_272000"
+          },
+          "unitType": "output_million_token",
+          "price": "315"
+        },
+        {
+          "conditions": {
+            "inputBand": "up_to_272000"
+          },
+          "unitType": "output_million_token",
+          "price": "210"
+        }
+      ]
+    },
+    {
+      "id": "e22a264a5d7c10ea4f6fd15aab1d380bc25c013659cf34a4882b2ca1cb548fd5",
+      "provider": "easyrouter",
+      "model": "gemini-3-flash-preview",
+      "module": "agent",
+      "label": "gemini-3-flash-preview",
+      "currency": "CNY",
+      "notes": "来源：用户提供的 EasyRouter 模型价格截图，2026-09-22；1美元=200积分，1美元=7元人民币，即1积分=0.035元。截图美元单价直接乘7，未重复除以200。GPT-5.5按输入272000 token分档，阈值本身属于低档。未提供缓存写入价格，留空待补；未设置生效日。",
+      "rows": [
+        {
+          "conditions": {},
+          "unitType": "cache_creation_million_token",
+          "price": ""
+        },
+        {
+          "conditions": {},
+          "unitType": "cached_million_token",
+          "price": "0.35"
+        },
+        {
+          "conditions": {},
+          "unitType": "input_million_token",
+          "price": "3.5"
+        },
+        {
+          "conditions": {},
+          "unitType": "output_million_token",
+          "price": "21"
+        }
+      ]
+    }
+  ]
+}

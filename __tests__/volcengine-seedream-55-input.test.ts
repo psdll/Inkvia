@@ -1,0 +1,23 @@
+import { expect, it, vi } from "vitest";
+const boundary=vi.hoisted(()=>({meta:{width:512,height:512,format:"png"} as Record<string,any>,size:1024}));
+vi.mock("sharp",()=>({default:()=>({metadata:async()=>boundary.meta})}));
+vi.mock("node:fs/promises",()=>({default:{stat:async()=>({size:boundary.size})}}));
+vi.mock("@/lib/tool-media/media-probe",()=>({resolveLocalUploadPath:(p:string)=>p}));
+import { validateVolcSeedream55Reference } from "@/lib/volcengine-seedream-55-input";
+it("validates the actual reference boundaries and stricter decomposition contract",async()=>{
+ boundary.size=30*1024*1024;boundary.meta={width:512,height:512,format:"png"};
+ await expect(validateVolcSeedream55Reference("a",true)).resolves.toBeUndefined();
+ boundary.size++;
+ await expect(validateVolcSeedream55Reference("a",true)).rejects.toThrow("30 MB");
+ boundary.size=1024;boundary.meta={width:512,height:512,format:"webp"};
+ await expect(validateVolcSeedream55Reference("a",false)).resolves.toBeUndefined();
+ await expect(validateVolcSeedream55Reference("a",true)).rejects.toThrow("PNG 或 JPEG");
+ boundary.meta={width:511,height:512,format:"png"};
+ await expect(validateVolcSeedream55Reference("a",true)).rejects.toThrow("262144");
+ boundary.meta={width:6000,height:6000,format:"jpeg"};
+ await expect(validateVolcSeedream55Reference("a",true)).resolves.toBeUndefined();
+ boundary.meta.width=6001;
+ await expect(validateVolcSeedream55Reference("a",false)).rejects.toThrow("3600 万");
+ boundary.meta={width:1700,height:100,format:"png"};
+ await expect(validateVolcSeedream55Reference("a",false)).rejects.toThrow("宽高比");
+});

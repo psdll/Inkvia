@@ -1,0 +1,75 @@
+// @vitest-environment jsdom
+import * as React from "react";
+import { act } from "react-dom/test-utils";
+import { createRoot, type Root } from "react-dom/client";
+import { ReactFlowProvider } from "@xyflow/react";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import fixture from "./fixtures/errors/legacy-input-limit-stack-overflow.json";
+import { AgentMediaGallery } from "@/components/creative-agent/AgentMedia";
+import { FriendlyErrorBlock } from "@/components/ui/friendly-error-block";
+import { applyAgentEvents, emptyAgentState, restoreAgentSnapshot } from "@/components/creative-agent/state";
+import { buildTurnCopyText } from "@/components/creative-agent/turn-result";
+import { summarizeMediaOutcomes } from "@/lib/creative-agent/media-summary";
+import type { CreativeAgentEvent, CreativeAgentMedia, CreativeAgentRun } from "@/lib/creative-agent/contracts";
+import type { CanvasNodeData } from "@/lib/canvas/document";
+vi.mock("@xyflow/react", async (original) => ({ ...await original<any>(), Handle: () => null, useNodeId: () => "legacy-task", useConnection: () => false, useUpdateNodeInternals: () => () => {}, useStore: (select: any) => select({ transform: [0, 0, 1], nodeLookup: new Map(), edges: [] }) }));
+vi.mock("next/dynamic", () => ({ default: () => () => null }));
+vi.mock("@/components/canvas/use-canvas-models", () => ({ useCanvasModels: () => null }));
+vi.mock("@/components/canvas/CanvasAudioPlayback", () => ({ useCanvasAudioPlayback: () => ({ snapshot: { active: false }, toggle: vi.fn(), seek: vi.fn() }) }));
+import { CanvasNodeCard, CanvasNodeEditorContext } from "@/components/canvas/CanvasNodeCard";
+const error = fixture.generation.errorMsg, neutral = "任务处理时发生内部错误，请联系管理员核对结果。";
+const run: CreativeAgentRun = { ...fixture.run, status: "failed", sessionId: fixture.sessionId, createdAt: fixture.generation.createdAt, updatedAt: fixture.generation.createdAt };
+const media: CreativeAgentMedia = { generationId: fixture.generation.id, runId: run.id, status: fixture.generation.status, mediaType: "image", model: fixture.generation.model, nodeIds: ["legacy-task"], outputs: [], error, createdAt: run.createdAt };
+const event = (sequence: number, type: CreativeAgentEvent["type"], payload: Record<string, unknown>): CreativeAgentEvent => ({ sequence, type, payload, runId: run.id, createdAt: run.createdAt });
+let host: HTMLDivElement, root: Root;
+const locate = vi.fn(), updateData = vi.fn(), runNode = vi.fn();
+const editor = { updateData, runNode, updateNodeSize: vi.fn(), isPanelVisible: () => false, isTaskPanelVisible: () => false, getMediaName: () => undefined, getTaskResultName: () => undefined, getTaskAssets: () => [] } as unknown as NonNullable<React.ContextType<typeof CanvasNodeEditorContext>>;
+beforeEach(() => {
+  vi.clearAllMocks(); vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  vi.stubGlobal("ResizeObserver", class { observe() {} unobserve() {} disconnect() {} });
+  host = document.createElement("div"); document.body.append(host); root = createRoot(host);
+});
+afterEach(() => { act(() => root.unmount()); host.remove(); vi.unstubAllGlobals(); });
+it("refreshes real reducer/snapshot media and tool details while keeping all raw evidence", async () => {
+  const events = [event(1, "media.updated", media), event(2, "tool.completed", { actionId: "legacy-read", name: "generation.read", detail: { status: "failed", generationId: media.generationId, error } })];
+  const original = JSON.stringify(events);
+  const state = applyAgentEvents(emptyAgentState(), JSON.parse(original), run);
+  const restored = restoreAgentSnapshot(JSON.parse(JSON.stringify({ sessionId: run.sessionId, run, messages: [], media: state.media, latestSequence: 2 })));
+  expect(restored.media).toMatchObject([{ generationId: fixture.generation.id, status: "failed", outputs: [], error }]);
+  expect(restored.media).toHaveLength(1);
+  expect(JSON.stringify(events)).toBe(original);
+  expect(state.tools[0]).toMatchObject({ outcomeLabel: "生成失败", detail: neutral });
+  await act(async () => root.render(React.createElement(AgentMediaGallery, { media: restored.media, onLocate: locate })));
+  expect(host.textContent).toContain(neutral); expect(host.textContent).not.toMatch(/输入数量|减少输入/);
+  expect(host.querySelectorAll("img,video")).toHaveLength(0);
+  await act(async () => root.render(React.createElement(AgentMediaGallery, { media: restored.media, onLocate: locate, settled: true, runStatus: "failed" })));
+  expect(host.textContent).toContain("1 项失败"); expect(host.textContent).toContain(neutral);
+  const summary = summarizeMediaOutcomes(restored.media, "failed")!;
+  expect(summary).not.toContain("。。");
+  const copy = buildTurnCopyText(restored, run.id, "http://localhost");
+  expect(copy).toContain(summary); expect(copy).not.toMatch(/输入数量|减少输入|已生成|已完成|不计费/);
+  expect(restored.media[0].error).toBe(error); expect(locate).not.toHaveBeenCalled(); expect(runNode).not.toHaveBeenCalled();
+});
+it("retains original cause and request ID in existing error details", async () => {
+  const value = error.replace("\n\n[原始错误]", "\n[请求ID] demo-request-71\n\n[原始错误]");
+  await act(async () => root.render(React.createElement(FriendlyErrorBlock, { error: value, defaultOpen: true })));
+  expect(host.textContent).toContain(neutral); expect(host.textContent).not.toContain("减少输入");
+  expect(host.querySelector("details")?.textContent).toContain("message=Maximum call stack size exceeded");
+  expect(host.querySelector("details")?.textContent).toContain("demo-request-71");
+});
+it("corrects retry explanations without dispatch and preserves unrelated Agent strings", async () => {
+  await act(async () => root.render(React.createElement(AgentMediaGallery, { media: [{ ...media, retryOfGenerationId: 10, retryReason: error }], onLocate: locate })));
+  expect(host.textContent).toContain(neutral); expect(host.textContent).not.toMatch(/输入数量|减少输入/);
+  expect(summarizeMediaOutcomes([{ ...media, retryOfGenerationId: 10, retryReason: error }])).not.toMatch(/输入数量|减少输入/);
+  const unrelated = "自定义失败\n\n[建议] 检查素材\n\n[原始错误]\noriginal-cause";
+  await act(async () => root.render(React.createElement(AgentMediaGallery, { media: [{ ...media, error: unrelated }], onLocate: locate })));
+  expect(host.textContent).toContain(unrelated); expect(runNode).not.toHaveBeenCalled();
+});
+it.each([error, "自定义节点错误：请检查参考素材"])("renders the already-saved Canvas failed image snapshot without mutation: %s", async (value) => {
+  const settings = { model: fixture.generation.model, prompt: "海边背景", aspectRatio: "auto", resolution: "2K", quality: "", count: 1 };
+  const data: CanvasNodeData = JSON.parse(JSON.stringify({ kind: "imageTask", task: { references: [], settings, batches: [{ id: "legacy-batch", createdAt: 1, settings, outputs: [{ id: "legacy-output", generationId: fixture.generation.id, status: "failed", error: value }] }] } }));
+  const original = JSON.stringify(data);
+  await act(async () => root.render(React.createElement(ReactFlowProvider, null, React.createElement(CanvasNodeEditorContext.Provider, { value: editor }, React.createElement(CanvasNodeCard, { id: "legacy-task", type: "imageTask", data, selected: false, dragging: false, width: 350, height: 350, isConnectable: true, zIndex: 0, draggable: true, selectable: true, deletable: true, positionAbsoluteX: 0, positionAbsoluteY: 0 })))));
+  expect(host.querySelector("[data-canvas-task-failure]")?.textContent).toBe(value === error ? neutral : value);
+  expect(JSON.stringify(data)).toBe(original); expect(updateData).not.toHaveBeenCalled(); expect(runNode).not.toHaveBeenCalled();
+});

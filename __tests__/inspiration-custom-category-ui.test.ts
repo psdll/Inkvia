@@ -1,0 +1,40 @@
+// @vitest-environment jsdom
+import * as React from "react";
+import { createRoot, type Root } from "react-dom/client";
+import { act, Simulate } from "react-dom/test-utils";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { afterEach, expect, it, vi } from "vitest";
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock("@/components/auth/AuthProvider", () => ({ useAuth: () => ({ user: null, openLoginModal: vi.fn() }) }));
+vi.mock("@/components/templates/inspiration-detail-fullscreen", () => ({ InspirationDetailFullscreen: () => null }));
+import { InspirationDiscoverySection } from "@/components/home/inspiration-discovery-section";
+let host: HTMLDivElement;
+let root: Root;
+let client: QueryClient;
+afterEach(async () => {
+  if (root) await act(async () => root.unmount());
+  client?.clear(); host?.remove(); vi.useRealTimers(); vi.restoreAllMocks(); vi.unstubAllGlobals();
+});
+it("renders server category names, filters by the exact custom name, and removes deleted categories", async () => {
+  vi.useFakeTimers(); vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true); localStorage.clear();
+  vi.stubGlobal("IntersectionObserver", class { observe() {} unobserve() {} disconnect() {} });
+  let categories = ["产品 & 摄影", "all"];
+  const request = vi.fn(async (_url: string) => new Response(JSON.stringify({ data: [], meta: { total: 0, version: "fixture", categories } })));
+  vi.stubGlobal("fetch", request);
+  client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  host = document.createElement("div"); document.body.append(host); root = createRoot(host);
+  await act(async () => root.render(React.createElement(QueryClientProvider, { client }, React.createElement(InspirationDiscoverySection))));
+  const settle = async () => { await act(async () => { await vi.advanceTimersByTimeAsync(1000); }); };
+  await settle();
+  const labels = () => Array.from(host.querySelectorAll("button")).map((button) => button.textContent);
+  expect(labels()).toEqual(expect.arrayContaining(["全部", "产品 & 摄影", "all"]));
+  expect(labels()).not.toEqual(expect.arrayContaining(["图片设计", "视频创作", "人脸创意"]));
+  const button = Array.from(host.querySelectorAll("button")).find((item) => item.textContent === "all")!;
+  await act(async () => Simulate.click(button)); await settle();
+  const url = new URL(String(request.mock.calls.at(-1)?.[0]), "http://localhost");
+  expect(url.searchParams.get("category")).toBe("all");
+  expect(url.searchParams.has("toolType")).toBe(false);
+  categories = [];
+  await act(async () => { window.dispatchEvent(new Event("inspiration-template-cards:invalidate")); }); await settle(); await settle();
+  expect(labels()).toContain("全部"); expect(labels()).not.toContain("all");
+});

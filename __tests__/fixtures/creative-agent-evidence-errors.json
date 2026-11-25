@@ -1,0 +1,311 @@
+{
+  "text": "请准备一套简约折纸海报，三个不同配色。总共只能生成三张，不要额外参考图。16:9或1:1都可以，2K，不要让我选模型。现在只展示完整生成方案，不要开始生成。",
+  "calls": [
+    {
+      "id": "demo-id-1",
+      "name": "generation_requirements",
+      "arguments": {
+        "facts": [
+          {
+            "field": "intent",
+            "value": "prepare",
+            "source": {
+              "end": 78,
+              "kind": "message",
+              "quote": "现在只展示完整生成方案，不要开始生成",
+              "start": 59,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.quantity",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.finalOutputs",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.totalOutputs",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.initialCalls",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.totalCalls",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.intermediateOutputs",
+            "value": 0,
+            "source": {
+              "end": 35,
+              "kind": "message",
+              "quote": "不要额外参考图",
+              "start": 28,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.params.resolution",
+            "value": "2K",
+            "source": {
+              "end": 50,
+              "kind": "message",
+              "quote": "2K",
+              "start": 48,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.params.aspectRatio",
+            "value": "1:1",
+            "source": {
+              "end": 47,
+              "kind": "message",
+              "quote": "16:9或1:1都可以",
+              "start": 36,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "soft"
+          },
+          {
+            "field": "image.modelChoice",
+            "value": {
+              "mode": "auto"
+            },
+            "source": {
+              "end": 58,
+              "kind": "message",
+              "quote": "不要让我选模型",
+              "start": 51,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "soft"
+          }
+        ]
+      }
+    },
+    {
+      "id": "demo-id-2",
+      "name": "generation_plan",
+      "arguments": {
+        "task": "按要求准备演示构图，保持指定参数。",
+        "facts": [
+          {
+            "field": "intent",
+            "value": "prepare",
+            "source": {
+              "end": 78,
+              "kind": "message",
+              "quote": "现在只展示完整生成方案，不要开始生成",
+              "start": 59,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.quantity",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.finalOutputs",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.totalOutputs",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.initialCalls",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.totalCalls",
+            "value": 3,
+            "source": {
+              "end": 27,
+              "kind": "message",
+              "quote": "总共只能生成三张",
+              "start": 19,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "generation.intermediateOutputs",
+            "value": 0,
+            "source": {
+              "end": 35,
+              "kind": "message",
+              "quote": "不要额外参考图",
+              "start": 28,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.params.resolution",
+            "value": "2K",
+            "source": {
+              "end": 50,
+              "kind": "message",
+              "quote": "2K",
+              "start": 48,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "hard"
+          },
+          {
+            "field": "image.params.aspectRatio",
+            "value": "1:1",
+            "source": {
+              "end": 47,
+              "kind": "message",
+              "quote": "16:9或1:1都可以",
+              "start": 36,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "soft"
+          },
+          {
+            "field": "image.modelChoice",
+            "value": {
+              "mode": "auto"
+            },
+            "source": {
+              "end": 58,
+              "kind": "message",
+              "quote": "不要让我选模型",
+              "start": 51,
+              "sourceId": "00000000-0000-4000-8000-000000000011"
+            },
+            "strength": "soft"
+          }
+        ],
+        "steps": [
+          {
+            "id": "poster_warm_terracotta",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：蓝色背景，纸鹤居中，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          },
+          {
+            "id": "poster_cool_teal",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：橙色背景，纸鹤偏左，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          },
+          {
+            "id": "poster_neutral_sage",
+            "role": "final",
+            "params": {
+              "resolution": "2K",
+              "aspectRatio": "1:1"
+            },
+            "prompt": "折纸海报示例：绿色背景，纸鹤偏右，无文字。",
+            "dependsOn": [],
+            "mediaType": "image",
+            "references": [],
+            "previewMode": "normal"
+          }
+        ],
+        "priorities": [
+          "quality",
+          "consistency"
+        ]
+      }
+    }
+  ]
+}

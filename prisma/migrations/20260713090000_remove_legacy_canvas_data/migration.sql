@@ -1,0 +1,2 @@
+-- Legacy canvas cleanup is intentionally not performed by Prisma migrations.
+-- Use the explicit archive-and-reset script after its archive checksum and count checks pass.

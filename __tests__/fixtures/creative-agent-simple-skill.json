@@ -1,0 +1,26 @@
+{
+  "text": "/skill:personal:7 一张家庭背景图",
+  "preferences": {
+    "image": {
+      "mode": "explicit",
+      "model": "gemini-3-pro-image",
+      "params": {
+        "resolution": "2K"
+      }
+    },
+    "video": {
+      "mode": "auto"
+    }
+  },
+  "body": "# 家庭背景示例\n\n使用浅色桌面和柔和窗光。保留参考图里蓝色杯子的轮廓，只调整背景。",
+  "project": {
+    "version": 1,
+    "revision": 2,
+    "constraints": [
+      "使用浅色背景",
+      "保留蓝色杯身"
+    ],
+    "artifacts": [],
+    "updatedAt": "2000-01-01T00:00:00.000Z"
+  }
+}

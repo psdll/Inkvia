@@ -1,0 +1,23 @@
+groups:
+  - name: admin-rollout
+    rules:
+      - alert: AdminWorksApiP95High
+        expr: admin_works_api_latency_ms{quantile="0.95"} > 500
+        for: 5m
+        labels:
+          severity: warning
+      - alert: AdminEventOldestTooOld
+        expr: admin_event_oldest_age_seconds > 30 or admin_event_oldest_missing > 0 or admin_event_exhausted_total > 0
+        for: 1m
+        labels:
+          severity: critical
+      - alert: AdminReadModelDiffDetected
+        expr: admin_read_model_diff_count > 0 or admin_read_model_diff_missing > 0 or admin_read_model_diff_age_seconds > 7200
+        for: 1m
+        labels:
+          severity: critical
+      - alert: AdminWorkerHeartbeatStale
+        expr: admin_worker_heartbeat_age_seconds > 120 or admin_worker_heartbeat_missing > 0
+        for: 1m
+        labels:
+          severity: critical

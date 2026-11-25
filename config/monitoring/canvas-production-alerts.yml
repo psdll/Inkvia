@@ -1,0 +1,43 @@
+groups:
+  - name: canvas-production
+    rules:
+      - alert: CanvasMutationP95High
+        expr: canvas_mutation_duration_ms{quantile="0.95"} > 600
+        for: 5m
+        labels:
+          severity: warning
+      - alert: CanvasConflictRateHigh
+        expr: rate(canvas_mutation_conflict_total[5m]) > 1 or rate(canvas_rebase_manual_total[5m]) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+      - alert: CanvasProjectionMismatch
+        expr: canvas_projection_checksum_mismatch > 0
+        for: 1m
+        labels:
+          severity: critical
+      - alert: CanvasSubmissionUnknown
+        expr: increase(canvas_submission_unknown_total[5m]) > 0 or canvas_submission_unknown_current > 0
+        for: 1m
+        labels:
+          severity: critical
+      - alert: CanvasWorkerStalled
+        expr: canvas_worker_heartbeat_age_seconds > 120 or canvas_worker_heartbeat_missing > 0 or canvas_run_wait_duration_ms > 120000
+        for: 2m
+        labels:
+          severity: critical
+      - alert: CanvasMediaGcBacklog
+        expr: canvas_media_gc_backlog > 1000
+        for: 15m
+        labels:
+          severity: warning
+      - alert: CanvasSnapshotCompactionBacklog
+        expr: canvas_compaction_backlog > 100
+        for: 15m
+        labels:
+          severity: warning
+      - alert: CanvasDatabaseConnectionsHigh
+        expr: canvas_database_connection_usage_ratio > 0.8
+        for: 5m
+        labels:
+          severity: critical

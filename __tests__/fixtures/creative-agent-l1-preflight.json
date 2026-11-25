@@ -1,0 +1,381 @@
+{
+  "text": "做一张1:1、2K的蓝色马克杯商品主图，浅灰背景，不要文字，仅一张。模型你按能力匹配。",
+  "requirements": {
+    "facts": [
+      {
+        "field": "image.params.aspectRatio",
+        "value": "1:1",
+        "source": {
+          "kind": "message",
+          "quote": "1:1",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.params.resolution",
+        "value": "2K",
+        "source": {
+          "kind": "message",
+          "quote": "2K",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.quantity",
+        "value": 1,
+        "source": {
+          "kind": "message",
+          "quote": "仅一张",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.modelChoice",
+        "value": {
+          "mode": "auto"
+        },
+        "source": {
+          "kind": "message",
+          "quote": "模型你按能力匹配",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "soft"
+      },
+      {
+        "field": "intent",
+        "value": "generate",
+        "source": {
+          "kind": "message",
+          "quote": "做一张1:1、2K的蓝色马克杯商品主图，浅灰背景，不要文字，仅一张。模型你按能力匹配。",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      }
+    ]
+  },
+  "invalidPlan": {
+    "task": "按要求准备演示构图，保持指定参数。",
+    "facts": [
+      {
+        "field": "image.params.aspectRatio",
+        "value": "1:1",
+        "source": {
+          "kind": "message",
+          "quote": "1:1",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.params.resolution",
+        "value": "2K",
+        "source": {
+          "kind": "message",
+          "quote": "2K",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.quantity",
+        "value": 1,
+        "source": {
+          "kind": "message",
+          "quote": "仅一张",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.modelChoice",
+        "value": {
+          "mode": "auto"
+        },
+        "source": {
+          "kind": "message",
+          "quote": "模型你按能力匹配",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "soft"
+      },
+      {
+        "field": "generation.finalOutputs",
+        "value": 1,
+        "source": {
+          "kind": "message",
+          "quote": "仅一张",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "generation.intermediateOutputs",
+        "value": 0,
+        "source": {
+          "kind": "message",
+          "quote": "做一张1:1、2K的蓝色马克杯商品主图，浅灰背景，不要文字，仅一张。模型你按能力匹配。",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "generation.initialCalls",
+        "value": 1,
+        "source": {
+          "kind": "message",
+          "quote": "仅一张",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "generation.retryCalls",
+        "value": 0,
+        "source": {
+          "kind": "message",
+          "quote": "仅一张",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "generation.totalCalls",
+        "value": 1,
+        "source": {
+          "kind": "message",
+          "quote": "仅一张",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "intent",
+        "value": "generate",
+        "source": {
+          "kind": "message",
+          "quote": "做一张1:1、2K的蓝色马克杯商品主图，浅灰背景，不要文字，仅一张。模型你按能力匹配。",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      }
+    ],
+    "steps": [
+      {
+        "id": "blue-mug-main",
+        "role": "final",
+        "params": {
+          "count": 1,
+          "resolution": "2K",
+          "aspectRatio": "1:1"
+        },
+        "prompt": "折纸海报示例：蓝色背景，纸鹤居中，无文字。",
+        "dependsOn": [],
+        "mediaType": "image",
+        "references": [],
+        "previewMode": "normal"
+      }
+    ],
+    "priorities": [
+      "quality"
+    ]
+  },
+  "plan": {
+    "task": "按要求准备演示构图，保持指定参数。",
+    "facts": [
+      {
+        "field": "image.params.aspectRatio",
+        "value": "1:1",
+        "source": {
+          "kind": "message",
+          "quote": "1:1",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.params.resolution",
+        "value": "2K",
+        "source": {
+          "kind": "message",
+          "quote": "2K",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.quantity",
+        "value": 1,
+        "source": {
+          "kind": "message",
+          "quote": "仅一张",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.modelChoice",
+        "value": {
+          "mode": "auto"
+        },
+        "source": {
+          "kind": "message",
+          "quote": "模型你按能力匹配",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "soft"
+      },
+      {
+        "field": "generation.finalOutputs",
+        "value": 1,
+        "source": {
+          "kind": "message",
+          "quote": "仅一张",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "intent",
+        "value": "generate",
+        "source": {
+          "kind": "message",
+          "quote": "做一张1:1、2K的蓝色马克杯商品主图，浅灰背景，不要文字，仅一张。模型你按能力匹配。",
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      }
+    ],
+    "steps": [
+      {
+        "id": "blue-mug-main",
+        "role": "final",
+        "params": {
+          "count": 1,
+          "resolution": "2K",
+          "aspectRatio": "1:1"
+        },
+        "prompt": "折纸海报示例：蓝色背景，纸鹤居中，无文字。",
+        "dependsOn": [],
+        "mediaType": "image",
+        "references": [],
+        "previewMode": "normal"
+      }
+    ],
+    "priorities": [
+      "quality"
+    ]
+  },
+  "offsetPlan": {
+    "task": "按要求准备演示构图，保持指定参数。",
+    "facts": [
+      {
+        "field": "image.params.aspectRatio",
+        "value": "1:1",
+        "source": {
+          "end": 6,
+          "kind": "message",
+          "quote": "1:1",
+          "start": 3,
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.params.resolution",
+        "value": "2K",
+        "source": {
+          "end": 9,
+          "kind": "message",
+          "quote": "2K",
+          "start": 7,
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.quantity",
+        "value": 1,
+        "source": {
+          "end": 33,
+          "kind": "message",
+          "quote": "仅一张",
+          "start": 30,
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "image.modelChoice",
+        "value": {
+          "mode": "auto"
+        },
+        "source": {
+          "end": 42,
+          "kind": "message",
+          "quote": "模型你按能力匹配",
+          "start": 34,
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "soft"
+      },
+      {
+        "field": "generation.finalOutputs",
+        "value": 1,
+        "source": {
+          "end": 33,
+          "kind": "message",
+          "quote": "仅一张",
+          "start": 30,
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      },
+      {
+        "field": "intent",
+        "value": "generate",
+        "source": {
+          "end": 43,
+          "kind": "message",
+          "quote": "做一张1:1、2K的蓝色马克杯商品主图，浅灰背景，不要文字，仅一张。模型你按能力匹配。",
+          "start": 0,
+          "sourceId": "00000000-0000-4000-8000-000000000013"
+        },
+        "strength": "hard"
+      }
+    ],
+    "steps": [
+      {
+        "id": "blue-mug-main",
+        "role": "final",
+        "params": {
+          "count": 1,
+          "resolution": "2K",
+          "aspectRatio": "1:1"
+        },
+        "prompt": "折纸海报示例：蓝色背景，纸鹤居中，无文字。",
+        "dependsOn": [],
+        "mediaType": "image",
+        "references": [],
+        "previewMode": "normal"
+      }
+    ],
+    "priorities": [
+      "quality"
+    ]
+  },
+  "media": {
+    "plan": {
+      "stepId": "blue-mug-main",
+      "actionId": "demo-id-5"
+    },
+    "params": {
+      "count": 1,
+      "resolution": "2K",
+      "aspectRatio": "1:1"
+    },
+    "prompt": "折纸海报示例：蓝色背景，纸鹤居中，无文字。"
+  }
+}
